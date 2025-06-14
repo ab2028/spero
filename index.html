@@ -726,22 +726,61 @@ Just type naturally!"></textarea>
         }
 
         // Course management
-        function updateCourseButtons() {
-            const buttonsContainer = document.getElementById('courseButtons');
-            const addButton = buttonsContainer.querySelector('.add-course-btn');
-            
-            // Clear existing course buttons
-            buttonsContainer.querySelectorAll('.course-btn').forEach(btn => btn.remove());
-            
-            // Add course buttons
-            Object.keys(appData.courses).forEach(courseName => {
-                const button = document.createElement('button');
-                button.className = 'course-btn';
-                button.textContent = courseName;
-                button.onclick = () => showCourseDashboard(courseName);
-                buttonsContainer.insertBefore(button, addButton);
-            });
-        }
+       function updateCourseButtons() {
+  const buttonsContainer = document.getElementById('courseButtons');
+  const addButton = buttonsContainer.querySelector('.add-course-btn');
+
+  // Clear existing course buttons except the Add button
+  buttonsContainer.querySelectorAll('.course-wrapper').forEach(el => el.remove());
+
+  Object.keys(appData.courses).forEach(courseName => {
+    const courseWrapper = document.createElement('div');
+    courseWrapper.className = 'course-wrapper';
+    courseWrapper.style.display = 'flex';
+    courseWrapper.style.alignItems = 'center';
+    courseWrapper.style.gap = '5px';
+    courseWrapper.draggable = true;
+    courseWrapper.dataset.course = courseName;
+
+    // Drag events
+    courseWrapper.addEventListener('dragstart', (e) => {
+      e.dataTransfer.setData('text/plain', courseName);
+      e.dataTransfer.effectAllowed = 'move';
+    });
+
+    courseWrapper.addEventListener('dragover', (e) => {
+      e.preventDefault(); // Needed to allow drop
+    });
+
+    courseWrapper.addEventListener('drop', (e) => {
+      e.preventDefault();
+      const draggedCourse = e.dataTransfer.getData('text/plain');
+      const targetCourse = courseWrapper.dataset.course;
+
+      reorderCourses(draggedCourse, targetCourse);
+      saveData();
+      updateCourseButtons();
+    });
+
+    const button = document.createElement('button');
+    button.className = 'course-btn';
+    button.textContent = courseName;
+    button.onclick = () => showCourseDashboard(courseName);
+
+    const deleteBtn = document.createElement('button');
+    deleteBtn.textContent = '×';
+    deleteBtn.style.color = 'white';
+    deleteBtn.style.background = '#dc3545';
+    deleteBtn.style.border = 'none';
+    deleteBtn.style.borderRadius = '4px';
+    deleteBtn.style.cursor = 'pointer';
+    deleteBtn.onclick = () => deleteCourse(courseName);
+
+    courseWrapper.appendChild(button);
+    courseWrapper.appendChild(deleteBtn);
+    buttonsContainer.insertBefore(courseWrapper, addButton);
+  });
+}
 
         function addNewCourse() {
             document.getElementById('courseModal').style.display = 'block';
