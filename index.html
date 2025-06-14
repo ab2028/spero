@@ -333,6 +333,10 @@ Just type naturally!"></textarea>
         const row = document.createElement('tr');
         row.draggable = true;
         row.dataset.period = period;
+        row.addEventListener('dragstart', (e) => {
+    e.dataTransfer.setData('text/plain', period); // Save the dragged period name
+});
+
 
         // Drag handle cell ☰
         const dragCell = document.createElement('td');
