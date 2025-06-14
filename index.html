@@ -336,6 +336,7 @@ Just type naturally!"></textarea>
         row.addEventListener('dragstart', (e) => {
     e.dataTransfer.setData('text/plain', period); // Save the dragged period name
 });
+        row.appendChild(periodCell);
 
 
         // Drag handle cell ☰
@@ -394,7 +395,7 @@ Just type naturally!"></textarea>
         deleteBtn.onclick = () => deleteScheduleRow(period);
         deleteCell.appendChild(deleteBtn);
         row.appendChild(deleteCell);
-        row.appendChild(periodCell);
+        
         
 
         // Drag events
