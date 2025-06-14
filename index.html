@@ -192,7 +192,6 @@ Just type naturally!"></textarea>
 
         // Course management
        function updateCourseButtons() {
-                       console.log("updatecoursebuttons is running!");
   const buttonsContainer = document.getElementById('courseButtons');
   const addButton = buttonsContainer.querySelector('.add-course-btn');
 
@@ -321,7 +320,6 @@ Just type naturally!"></textarea>
         }
 
      function updateScheduleDisplay() {
-         console.log("upschdisp is running!");
     const weekKey = getWeekKey();
     const scheduleData = appData.schedule[weekKey] || {};
     const tbody = document.getElementById('scheduleBody');
@@ -371,7 +369,6 @@ Just type naturally!"></textarea>
         // Day cells (Sunday-start week, order matches table: Sun, Mon, Tue, Wed, Thu, Fri, Sat)
         const dayOrder = [0, 1, 2, 3, 4, 5, 6]; // Confirms Sun=0, Mon=1, ..., Sat=6
         for (let i = 0; i < 7; i++) {
-            console.log("myFunction is running!");
             const cell = document.createElement('td');
             cell.contentEditable = true;
             cell.textContent = days[dayOrder[i]] || '';
