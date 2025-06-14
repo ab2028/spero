@@ -6,7 +6,21 @@
     <title>Summer School LMS</title>
     <style>
 
-     
+     td:first-child {
+    font-size: 18px;
+    text-align: center;
+    cursor: grab;
+    color: #888;
+    user-select: none;
+    width: 30px;
+  }
+
+
+
+        
+        .course-wrapper {
+  cursor: grab;
+}
   
         
         * {
@@ -564,7 +578,6 @@
     </tr>
   </thead>
   <tbody id="scheduleBody">
-    <!-- JavaScript will fill this -->
   </tbody>
 </table>
 
@@ -916,16 +929,19 @@ Just type naturally!"></textarea>
         row.appendChild(periodCell);
 
         // Day cells
-        for (let i = 0; i < 7; i++) {
-            const cell = document.createElement('td');
-            cell.contentEditable = true;
-            cell.textContent = days[i] || '';
-            cell.addEventListener('blur', () => {
-                scheduleData[period][i] = cell.textContent;
-                saveData();
-            });
-            row.appendChild(cell);
-        }
+        const dayOrder = [0, 1, 2, 3, 4, 5, 6]; // Keep this if your data is already Sunday-first
+for (let i = 0; i < 7; i++) {
+    const dayIndex = i; // This now maps: 0 = Sun, 1 = Mon, ..., 6 = Sat
+    const cell = document.createElement('td');
+    cell.contentEditable = true;
+    cell.textContent = days[dayIndex] || '';
+    cell.addEventListener('blur', () => {
+        scheduleData[period][dayIndex] = cell.textContent;
+        saveData();
+    });
+    row.appendChild(cell);
+}
+
 
         // Delete button cell
         const deleteCell = document.createElement('td');
