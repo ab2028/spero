@@ -3,6 +3,17 @@
   cursor: grab;
 }
 
+
+.period-cell {
+  position: relative;
+  padding-left: 22px; /* room for drag handle */
+}
+
+
+.drag-handle {
+  position: absolute;
+  left: 2px;
+
 .period-cell {
   position: relative;
 }
@@ -19,6 +30,8 @@
   display: none;
 }
 
+tr:hover .drag-handle,
+.drag-handle:hover {
 tr:hover .drag-handle {
   display: inline;
 }
