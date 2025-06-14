@@ -1,39 +1,18 @@
 
-.course-wrapper {
+     td:first-child {
+    font-size: 18px;
+    text-align: center;
+    cursor: grab;
+    color: #888;
+    user-select: none;
+    width: 30px;
+  }
+
+
+
+        
+        .course-wrapper {
   cursor: grab;
-}
-
-
-.period-cell {
-  position: relative;
-  padding-left: 22px; /* room for drag handle */
-}
-
-
-.drag-handle {
-  position: absolute;
-  left: 2px;
-
-.period-cell {
-  position: relative;
-}
-
-.drag-handle {
-  position: absolute;
-  left: -25px;
-  top: 50%;
-  transform: translateY(-50%);
-  font-size: 18px;
-  color: #888;
-  cursor: grab;
-  user-select: none;
-  display: none;
-}
-
-tr:hover .drag-handle,
-.drag-handle:hover {
-tr:hover .drag-handle {
-  display: inline;
 }
   
         
