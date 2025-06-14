@@ -730,26 +730,25 @@ Just type naturally!"></textarea>
   const buttonsContainer = document.getElementById('courseButtons');
   const addButton = buttonsContainer.querySelector('.add-course-btn');
 
-  // Clear existing course buttons except the Add button
+  // Remove all existing course wrappers
   buttonsContainer.querySelectorAll('.course-wrapper').forEach(el => el.remove());
 
   Object.keys(appData.courses).forEach(courseName => {
     const courseWrapper = document.createElement('div');
     courseWrapper.className = 'course-wrapper';
+    courseWrapper.draggable = true;
+    courseWrapper.dataset.course = courseName;
     courseWrapper.style.display = 'flex';
     courseWrapper.style.alignItems = 'center';
     courseWrapper.style.gap = '5px';
-    courseWrapper.draggable = true;
-    courseWrapper.dataset.course = courseName;
 
-    // Drag events
+    // Drag logic
     courseWrapper.addEventListener('dragstart', (e) => {
       e.dataTransfer.setData('text/plain', courseName);
-      e.dataTransfer.effectAllowed = 'move';
     });
 
     courseWrapper.addEventListener('dragover', (e) => {
-      e.preventDefault(); // Needed to allow drop
+      e.preventDefault();
     });
 
     courseWrapper.addEventListener('drop', (e) => {
@@ -781,6 +780,9 @@ Just type naturally!"></textarea>
     buttonsContainer.insertBefore(courseWrapper, addButton);
   });
 }
+
+
+        
         function reorderCourses(draggedName, targetName) {
   const entries = Object.entries(appData.courses);
   const draggedIndex = entries.findIndex(([name]) => name === draggedName);
