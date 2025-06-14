@@ -336,7 +336,7 @@ Just type naturally!"></textarea>
         row.addEventListener('dragstart', (e) => {
     e.dataTransfer.setData('text/plain', period); // Save the dragged period name
 });
-        row.appendChild(periodCell);
+        
 
 
         // Drag handle cell ☰
@@ -365,7 +365,7 @@ Just type naturally!"></textarea>
                 updateScheduleDisplay();
             }
         });
-        
+        row.appendChild(periodCell);
         
 
         // Day cells (Sunday-start week, order matches table: Sun, Mon, Tue, Wed, Thu, Fri, Sat)
