@@ -397,14 +397,14 @@ Just type naturally!"></textarea>
         });
         row.appendChild(periodCell);
 
-        // Day cells
-        const dayOrder = [0, 1, 2, 3, 4, 5, 6];
+        // Day cells (Sunday-start week, order matches table: Sun, Mon, Tue, Wed, Thu, Fri, Sat)
+        const dayOrder = [0, 1, 2, 3, 4, 5, 6]; // Confirms Sun=0, Mon=1, ..., Sat=6
         for (let i = 0; i < 7; i++) {
             const cell = document.createElement('td');
             cell.contentEditable = true;
-            cell.textContent = days[i] || '';
+            cell.textContent = days[dayOrder[i]] || '';
             cell.addEventListener('blur', () => {
-                scheduleData[period][i] = cell.textContent;
+                scheduleData[period][dayOrder[i]] = cell.textContent;
                 saveData();
             });
             row.appendChild(cell);
