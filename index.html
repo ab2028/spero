@@ -292,7 +292,7 @@ Just type naturally!"></textarea>
             ];
 
             const weekKey = getWeekKey();
-            if (!appData.schedule[weekKey]) {
+            if True { //NOTE(!appData.schedule[weekKey]) {
                 appData.schedule[weekKey] = {};
                 defaultPeriods.forEach(period => {
                     appData.schedule[weekKey][period] = ['', '', '', '', '', '', ''];
@@ -376,7 +376,7 @@ Just type naturally!"></textarea>
             row.appendChild(cell);
         }
 
-        // Delete button cell
+        // Cell for the Delete button 
         const deleteCell = document.createElement('td');
         const deleteBtn = document.createElement('button');
         deleteBtn.textContent = '×';
