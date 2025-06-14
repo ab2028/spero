@@ -340,7 +340,7 @@ Just type naturally!"></textarea>
 
         // Drag handle cell ☰
         const dragCell = document.createElement('td');
-        dragCell.textContent = period; //'d'
+        dragCell.textContent = 'd';
         //dragCell.style.cursor = 'grab';
         dragCell.style.textAlign = 'center';
         dragCell.style.color = '#888';
@@ -377,6 +377,7 @@ Just type naturally!"></textarea>
                 scheduleData[period][dayOrder[i]] = cell.textContent;
                 saveData();
             });
+            row.appendChild(deleteCell);
             row.appendChild(cell);
         }
 
@@ -391,8 +392,9 @@ Just type naturally!"></textarea>
         deleteBtn.style.cursor = 'pointer';
         deleteBtn.onclick = () => deleteScheduleRow(period);
         deleteCell.appendChild(deleteBtn);
+        
+        
         row.appendChild(periodCell);
-        row.appendChild(deleteCell);
 
         // Drag events
         row.addEventListener('dragstart', (e) => {
