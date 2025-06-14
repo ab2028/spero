@@ -320,6 +320,7 @@ Just type naturally!"></textarea>
         }
 
      function updateScheduleDisplay() {
+         console.log("myFunction is running!");
     const weekKey = getWeekKey();
     const scheduleData = appData.schedule[weekKey] || {};
     const tbody = document.getElementById('scheduleBody');
