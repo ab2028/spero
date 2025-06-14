@@ -6,14 +6,17 @@
     <title>Summer School LMS</title>
     <style>
 
-        td:first-child {
-  font-size: 18px;
-  cursor: grab;
-  user-select: none;
-  color: #888;
-  text-align: center;
-  width: 30px;
-}
+     
+  td:first-child {
+    font-size: 18px;
+    text-align: center;
+    cursor: grab;
+    color: #888;
+    user-select: none;
+    width: 30px;
+  }
+
+
 
         
         .course-wrapper {
@@ -560,20 +563,25 @@
                 </div>
                 <table class="schedule-table" id="scheduleTable">
                    <table>
-                      <thead>
-                          <tr>
-                            <th></th>           <!-- ☰ drag handle -->
-                            <th>Period</th>
-                            <th>Mon</th>
-                            <th>Tue</th>
-                            <th>Wed</th>
-                            <th>Thu</th>
-                            <th>Fri</th>
-                            <th>Sat</th>
-                            <th>Sun</th>
-                            <th></th>           <!-- delete button -->
-                          </tr>
-                    </thead>
+  <thead>
+    <tr>
+      <th></th>            <!-- ☰ Drag handle -->
+      <th>Period</th>
+      <th>Sun</th>
+      <th>Mon</th>
+      <th>Tue</th>
+      <th>Wed</th>
+      <th>Thu</th>
+      <th>Fri</th>
+      <th>Sat</th>
+      <th></th>            <!-- Delete button -->
+    </tr>
+  </thead>
+  <tbody id="scheduleBody">
+    <!-- JavaScript will fill this -->
+  </tbody>
+</table>
+
 
   <tbody id="scheduleBody">
     <!-- dynamically filled -->
