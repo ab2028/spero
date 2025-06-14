@@ -331,6 +331,7 @@ Just type naturally!"></textarea>
     entries.forEach(([period, days]) => {
         const row = document.createElement('tr');
         row.dataset.period = period;
+        row.draggable = false;
         
 
 
@@ -347,6 +348,7 @@ Just type naturally!"></textarea>
         handle.className = 'drag-handle';
         handle.textContent = '☰';
         handle.draggable = true;
+        handle.contentEditable = false;
         handle.addEventListener('dragstart', (e) => {
             e.dataTransfer.setData('text/plain', period);
         });
