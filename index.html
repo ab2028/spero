@@ -864,46 +864,107 @@ Just type naturally!"></textarea>
                 `Week of ${weekStart.toLocaleDateString('en-US', options)}`;
         }
 
-        function updateScheduleDisplay() {
-            const weekKey = getWeekKey();
-            const scheduleData = appData.schedule[weekKey] || {};
-            const tbody = document.getElementById('scheduleBody');
-            tbody.innerHTML = '';
+       function updateScheduleDisplay() {
+    const weekKey = getWeekKey();
+    const scheduleData = appData.schedule[weekKey] || {};
+    const tbody = document.getElementById('scheduleBody');
+    tbody.innerHTML = '';
 
-            Object.keys(scheduleData).forEach(period => {
-                const row = document.createElement('tr');
-                
-                // Period header (editable)
-                const periodCell = document.createElement('td');
-                periodCell.contentEditable = true;
-                periodCell.textContent = period;
-                periodCell.style.fontWeight = 'bold';
-                periodCell.style.background = '#f8f9ff';
-                periodCell.addEventListener('blur', () => {
-                    const newPeriod = periodCell.textContent.trim();
-                    if (newPeriod !== period && newPeriod) {
-                        scheduleData[newPeriod] = scheduleData[period];
-                        delete scheduleData[period];
-                        saveData();
-                    }
-                });
-                row.appendChild(periodCell);
+    const entries = Object.entries(scheduleData);
 
-                // Day cells
-                for (let i = 0; i < 7; i++) {
-                    const cell = document.createElement('td');
-                    cell.contentEditable = true;
-                    cell.textContent = scheduleData[period][i] || '';
-                    cell.addEventListener('blur', () => {
-                        scheduleData[period][i] = cell.textContent;
-                        saveData();
-                    });
-                    row.appendChild(cell);
-                }
+    entries.forEach(([period, days]) => {
+        const row = document.createElement('tr');
+        row.draggable = true;
+        row.dataset.period = period;
 
-                tbody.appendChild(row);
+        // Drag handle cell
+        const dragCell = document.createElement('td');
+        dragCell.innerHTML = '☰';
+        dragCell.style.cursor = 'grab';
+        dragCell.style.textAlign = 'center';
+        dragCell.style.color = '#888';
+        dragCell.style.width = '30px';
+        row.appendChild(dragCell);
+
+        // Period cell
+        const periodCell = document.createElement('td');
+        periodCell.contentEditable = true;
+        periodCell.textContent = period;
+        periodCell.style.fontWeight = 'bold';
+        periodCell.style.background = '#f8f9ff';
+        periodCell.addEventListener('blur', () => {
+            const newPeriod = periodCell.textContent.trim();
+            if (newPeriod !== period && newPeriod) {
+                scheduleData[newPeriod] = scheduleData[period];
+                delete scheduleData[period];
+                saveData();
+                updateScheduleDisplay();
+            }
+        });
+        row.appendChild(periodCell);
+
+        // Day cells
+        for (let i = 0; i < 7; i++) {
+            const cell = document.createElement('td');
+            cell.contentEditable = true;
+            cell.textContent = days[i] || '';
+            cell.addEventListener('blur', () => {
+                scheduleData[period][i] = cell.textContent;
+                saveData();
             });
+            row.appendChild(cell);
         }
+
+        // Delete button cell
+        const deleteCell = document.createElement('td');
+        const deleteBtn = document.createElement('button');
+        deleteBtn.textContent = '×';
+        deleteBtn.style.background = '#dc3545';
+        deleteBtn.style.color = 'white';
+        deleteBtn.style.border = 'none';
+        deleteBtn.style.borderRadius = '4px';
+        deleteBtn.style.cursor = 'pointer';
+        deleteBtn.onclick = () => deleteScheduleRow(period);
+        deleteCell.appendChild(deleteBtn);
+        row.appendChild(deleteCell);
+
+        // Drag events
+        row.addEventListener('dragstart', (e) => {
+            e.dataTransfer.setData('text/plain', period);
+        });
+
+        row.addEventListener('dragover', (e) => {
+            e.preventDefault();
+            row.style.outline = '2px dashed #ccc';
+        });
+
+        row.addEventListener('dragleave', () => {
+            row.style.outline = '';
+        });
+
+        row.addEventListener('drop', (e) => {
+            e.preventDefault();
+            row.style.outline = '';
+
+            const draggedPeriod = e.dataTransfer.getData('text/plain');
+            const targetPeriod = row.dataset.period;
+
+            const reordered = Object.entries(scheduleData);
+            const fromIndex = reordered.findIndex(([p]) => p === draggedPeriod);
+            const toIndex = reordered.findIndex(([p]) => p === targetPeriod);
+
+            if (fromIndex !== -1 && toIndex !== -1 && fromIndex !== toIndex) {
+                const [draggedItem] = reordered.splice(fromIndex, 1);
+                reordered.splice(toIndex, 0, draggedItem);
+                appData.schedule[weekKey] = Object.fromEntries(reordered);
+                saveData();
+                updateScheduleDisplay();
+            }
+        });
+
+        tbody.appendChild(row);
+    });
+}
 
         function addScheduleRow() {
             const weekKey = getWeekKey();
