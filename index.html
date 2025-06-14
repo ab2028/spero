@@ -292,7 +292,7 @@ Just type naturally!"></textarea>
             ];
 //NOTE(!appData.schedule[weekKey])
             const weekKey = getWeekKey();
-            if (true) { 
+            if (!appData.schedule[weekKey]) { 
                 appData.schedule[weekKey] = {};
                 defaultPeriods.forEach(period => {
                     appData.schedule[weekKey][period] = ['', '', '', '', '', '', ''];
@@ -1017,15 +1017,15 @@ function updateScheduleDisplay() {
     };
   }
 
-  // Ensure current week has a default schedule
-  const currentWeekKey = getWeekKey();
-  if (!appData.schedule[currentWeekKey]) {
-    appData.schedule[currentWeekKey] = {
-      "Period 1": ["", "", "", "", "", "", ""],
-      "Period 2": ["", "", "", "", "", "", ""],
-      "Period 3": ["", "", "", "", "", "", ""]
-    };
-  }
+  // Ensure current week has a default schedule NOTE OK THIS IS IT i believe this is already defined so it conflicts
+  //const currentWeekKey = getWeekKey();
+  //if (!appData.schedule[currentWeekKey]) {
+   // appData.schedule[currentWeekKey] = {
+   //   "Period 1": ["", "", "", "", "", "", ""],
+   //   "Period 2": ["", "", "", "", "", "", ""],
+   //   "Period 3": ["", "", "", "", "", "", ""]
+  //  };
+ // }
 
   updateCourseButtons();
   updateScheduleDisplay();
