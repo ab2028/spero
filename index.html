@@ -1320,39 +1320,62 @@ function deleteScheduleRow(periodName) {
 
 // --- Update UI to Add Delete Buttons ---
 function updateCourseButtons() {
-    const buttonsContainer = document.getElementById('courseButtons');
-    const addButton = buttonsContainer.querySelector('.add-course-btn');
+  const buttonsContainer = document.getElementById('courseButtons');
+  const addButton = buttonsContainer.querySelector('.add-course-btn');
 
-    // Remove all children except the add button
-    Array.from(buttonsContainer.children).forEach(child => {
-        if (child !== addButton) child.remove();
+  // Remove previous course rows
+  buttonsContainer.querySelectorAll('.course-wrapper').forEach(el => el.remove());
+
+  Object.keys(appData.courses).forEach(courseName => {
+    const wrapper = document.createElement('div');
+    wrapper.className = 'course-wrapper';
+    wrapper.draggable = true;
+    wrapper.dataset.course = courseName;
+    wrapper.style.display = 'flex';
+    wrapper.style.alignItems = 'center';
+    wrapper.style.gap = '5px';
+
+    // Drag handlers
+    wrapper.addEventListener('dragstart', (e) => {
+      console.log("Start dragging", courseName);
+      e.dataTransfer.setData('text/plain', courseName);
     });
 
-    Object.keys(appData.courses).forEach(courseName => {
-        const courseWrapper = document.createElement('div');
-        courseWrapper.style.display = 'flex';
-        courseWrapper.style.alignItems = 'center';
-        courseWrapper.style.gap = '5px';
-
-        const button = document.createElement('button');
-        button.className = 'course-btn';
-        button.textContent = courseName;
-        button.onclick = () => showCourseDashboard(courseName);
-
-        const deleteBtn = document.createElement('button');
-        deleteBtn.textContent = '×';
-        deleteBtn.style.color = 'white';
-        deleteBtn.style.background = '#dc3545';
-        deleteBtn.style.border = 'none';
-        deleteBtn.style.borderRadius = '4px';
-        deleteBtn.style.cursor = 'pointer';
-        deleteBtn.onclick = () => deleteCourse(courseName);
-
-        courseWrapper.appendChild(button);
-        courseWrapper.appendChild(deleteBtn);
-        buttonsContainer.insertBefore(courseWrapper, addButton);
+    wrapper.addEventListener('dragover', (e) => {
+      e.preventDefault();
     });
+
+    wrapper.addEventListener('drop', (e) => {
+      e.preventDefault();
+      const dragged = e.dataTransfer.getData('text/plain');
+      const target = wrapper.dataset.course;
+      reorderCourses(dragged, target);
+      saveData();
+      updateCourseButtons();
+    });
+
+    // Course button
+    const courseBtn = document.createElement('button');
+    courseBtn.className = 'course-btn';
+    courseBtn.textContent = courseName;
+    courseBtn.onclick = () => showCourseDashboard(courseName);
+
+    // Delete button
+    const deleteBtn = document.createElement('button');
+    deleteBtn.textContent = '×';
+    deleteBtn.style.background = '#dc3545';
+    deleteBtn.style.color = 'white';
+    deleteBtn.style.border = 'none';
+    deleteBtn.style.borderRadius = '4px';
+    deleteBtn.style.cursor = 'pointer';
+    deleteBtn.onclick = () => deleteCourse(courseName);
+
+    wrapper.appendChild(courseBtn);
+    wrapper.appendChild(deleteBtn);
+    buttonsContainer.insertBefore(wrapper, addButton);
+  });
 }
+
 
 function updateUnitsDisplay() {
     const unitsGrid = document.getElementById('unitsGrid');
