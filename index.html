@@ -875,7 +875,7 @@ Just type naturally!"></textarea>
                 `Week of ${weekStart.toLocaleDateString('en-US', options)}`;
         }
 
-       function updateScheduleDisplay() {
+      function updateScheduleDisplay() {
     const weekKey = getWeekKey();
     const scheduleData = appData.schedule[weekKey] || {};
     const tbody = document.getElementById('scheduleBody');
@@ -895,6 +895,8 @@ Just type naturally!"></textarea>
         dragCell.style.textAlign = 'center';
         dragCell.style.color = '#888';
         dragCell.style.width = '30px';
+        dragCell.style.userSelect = 'none';
+        dragCell.style.fontSize = '18px';
         row.appendChild(dragCell);
 
         // Period cell
@@ -976,6 +978,7 @@ Just type naturally!"></textarea>
         tbody.appendChild(row);
     });
 }
+
 
         function addScheduleRow() {
             const weekKey = getWeekKey();
