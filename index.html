@@ -1422,7 +1422,15 @@ function updateScheduleDisplay() {
 
    // Initialize the app when page loads
         document.addEventListener('DOMContentLoaded', initApp);
-        loadData();
+        document.addEventListener('DOMContentLoaded', () => {
+  loadData();
+
+  // Also set up autosave every 10 seconds
+  setInterval(() => {
+    saveData();
+  }, 10000);
+});
+
 </script>
 
 </body>
