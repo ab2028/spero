@@ -364,7 +364,7 @@ Just type naturally!"></textarea>
                 updateScheduleDisplay();
             }
         });
-        row.appendChild(periodCell);
+        
         
 
         // Day cells (Sunday-start week, order matches table: Sun, Mon, Tue, Wed, Thu, Fri, Sat)
@@ -394,7 +394,7 @@ Just type naturally!"></textarea>
         deleteBtn.onclick = () => deleteScheduleRow(period);
         deleteCell.appendChild(deleteBtn);
         row.appendChild(deleteCell);
-        
+        row.appendChild(periodCell);
         
 
         // Drag events
