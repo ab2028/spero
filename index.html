@@ -35,10 +35,10 @@
                         <button class="nav-btn" onclick="nextWeek()">Next →</button>
                     </div>
                 </div>
-                <table class="schedule-table" id="scheduleTable">
+                <table class="schedule-table">
   <thead>
     <tr>
-      <th></th>            <!-- ☰ Drag handle -->
+      <th></th> <!-- drag handle -->
       <th>Period</th>
       <th>Sun</th>
       <th>Mon</th>
@@ -47,18 +47,14 @@
       <th>Thu</th>
       <th>Fri</th>
       <th>Sat</th>
-      <th></th>            <!-- Delete button -->
+      <th></th> <!-- delete button -->
     </tr>
   </thead>
   <tbody id="scheduleBody">
+    <!-- Rows go here dynamically -->
   </tbody>
 </table>
 
-
-  <tbody id="scheduleBody">
-    <!-- dynamically filled -->
-  </tbody>
-</table>
 
                 <button class="add-row-btn" onclick="addScheduleRow()">+ Add Period</button>
             </div>
