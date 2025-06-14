@@ -781,6 +781,19 @@ Just type naturally!"></textarea>
     buttonsContainer.insertBefore(courseWrapper, addButton);
   });
 }
+        function reorderCourses(draggedName, targetName) {
+  const entries = Object.entries(appData.courses);
+  const draggedIndex = entries.findIndex(([name]) => name === draggedName);
+  const targetIndex = entries.findIndex(([name]) => name === targetName);
+
+  if (draggedIndex === -1 || targetIndex === -1 || draggedIndex === targetIndex) return;
+
+  const [draggedItem] = entries.splice(draggedIndex, 1);
+  entries.splice(targetIndex, 0, draggedItem);
+
+  appData.courses = Object.fromEntries(entries);
+}
+
 
         function addNewCourse() {
             document.getElementById('courseModal').style.display = 'block';
