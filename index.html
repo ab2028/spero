@@ -357,6 +357,7 @@ Just type naturally!"></textarea>
         }
 
      function updateScheduleDisplay() {
+    console.log("Updating schedule")
     const weekKey = getWeekKey();
     const scheduleData = appData.schedule[weekKey] || {};
     const tbody = document.getElementById('scheduleBody');
