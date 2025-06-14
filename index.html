@@ -342,12 +342,12 @@ Just type naturally!"></textarea>
         // Drag handle cell ☰
         const dragCell = document.createElement('td');
         dragCell.textContent = '☰';
-        //dragCell.style.cursor = 'grab';
+        dragCell.style.cursor = 'grab';
         dragCell.style.textAlign = 'center';
         dragCell.style.color = '#888';
         dragCell.style.width = '30px';
-        // dragCell.style.userSelect = 'none';
-        // dragCell.style.fontSize = '18px';
+        dragCell.style.userSelect = 'none';
+        dragCell.style.fontSize = '18px';
         row.appendChild(dragCell);
 
         // Period cell
