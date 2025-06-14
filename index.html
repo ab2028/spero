@@ -37,7 +37,7 @@
                 <table class="schedule-table"> <!-- Note: may need fixing -->
   <thead>
     <tr>
-      <th>Drag Handle</th>  <!-- drag handle -->
+      <th></th>  <!-- drag handle -->
       <th>Period</th>
       <th>Sun</th>
       <th>Mon</th>
@@ -46,7 +46,7 @@
       <th>Thu</th>
       <th>Fri</th>
       <th>Sat</th>
-      <th>Delete</th>  <!-- delete button -->
+      <th></th>  <!-- delete button -->
     </tr>
   </thead>
   <tbody id="scheduleBody">
@@ -341,7 +341,7 @@ Just type naturally!"></textarea>
 
         // Drag handle cell ☰
         const dragCell = document.createElement('td');
-        dragCell.textContent = 'd';
+        dragCell.textContent = '☰';
         //dragCell.style.cursor = 'grab';
         dragCell.style.textAlign = 'center';
         dragCell.style.color = '#888';
