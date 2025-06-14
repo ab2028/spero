@@ -374,6 +374,7 @@ Just type naturally!"></textarea>
         timeCell.addEventListener('blur', () => {
             scheduleData[period].time = timeCell.textContent.trim();
             saveData();
+            updateCurrentActivity();
         });
         row.appendChild(timeCell);
         
@@ -443,6 +444,7 @@ Just type naturally!"></textarea>
 
         tbody.appendChild(row);
     });
+    updateCurrentActivity();
 }
 
 
@@ -482,9 +484,47 @@ Just type naturally!"></textarea>
             document.getElementById('currentTime').textContent = timeString;
         }
 
+        function parseTimeRange(range, prevHour = null) {
+            if (!range) return null;
+            const [startStr, endStr] = range.split('-').map(p => p.trim());
+            if (!startStr || !endStr) return null;
+
+            const parse = (str, base) => {
+                const [h, m] = str.split(':').map(Number);
+                if (isNaN(h) || isNaN(m)) return null;
+                let hour = h;
+                if (base !== null && hour < base) hour += 12;
+                return { hour, minute: m, total: hour * 60 + m };
+            };
+
+            const start = parse(startStr, prevHour);
+            if (!start) return null;
+            const end = parse(endStr, start.hour);
+            if (!end) return null;
+
+            return { start: start.total, end: end.total, endHour: end.hour };
+        }
+
+        function getTimeSlots() {
+            const weekKey = getWeekKey();
+            const scheduleData = appData.schedule[weekKey] || {};
+            const slots = [];
+            let prev = 0;
+            for (const [name, info] of Object.entries(scheduleData)) {
+                const res = parseTimeRange(info.time, prev);
+                if (res) {
+                    slots.push({ start: res.start, end: res.end, name, time: info.time });
+                    prev = res.endHour;
+                }
+            }
+            return slots;
+        }
+
         function updateCurrentActivity() {
             const now = new Date();
             const currentTime = now.getHours() * 60 + now.getMinutes();
+
+            const timeSlots = getTimeSlots();
             
             const timeSlots = [
                 { start: 450, end: 480, name: "Wake up time! ☀️", time: "7:30-8:00" },
