@@ -4,7 +4,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Summer School LMS</title>
-    <link rel="stylesheet" href="style.css"> 
+    <link rel="stylesheet" href="style.css">
     
 </head>
 <body>
@@ -37,7 +37,7 @@
                 <table class="schedule-table"> <!-- Note: may need fixing -->
   <thead>
     <tr>
-      <th>Drag Handle</th>  <!-- drag handle -->
+      <th></th>  <!-- drag handle -->
       <th>Period</th>
       <th>Sun</th>
       <th>Mon</th>
@@ -46,7 +46,7 @@
       <th>Thu</th>
       <th>Fri</th>
       <th>Sat</th>
-      <th>Delete</th>  <!-- delete button -->
+      <th></th>  <!-- delete button -->
     </tr>
   </thead>
   <tbody id="scheduleBody">
@@ -336,17 +336,18 @@ Just type naturally!"></textarea>
         row.addEventListener('dragstart', (e) => {
     e.dataTransfer.setData('text/plain', period); // Save the dragged period name
 });
+        
 
 
         // Drag handle cell ☰
         const dragCell = document.createElement('td');
-        dragCell.textContent = 'd';
-        //dragCell.style.cursor = 'grab';
+        dragCell.textContent = '☰';
+        dragCell.style.cursor = 'grab';
         dragCell.style.textAlign = 'center';
         dragCell.style.color = '#888';
         dragCell.style.width = '30px';
-        // dragCell.style.userSelect = 'none';
-        // dragCell.style.fontSize = '18px';
+        dragCell.style.userSelect = 'none';
+        dragCell.style.fontSize = '18px';
         row.appendChild(dragCell);
 
         // Period cell
@@ -942,56 +943,6 @@ function updateUnitsDisplay() {
     });
 }
 
-function updateScheduleDisplay() {
-    const weekKey = getWeekKey();
-    const scheduleData = appData.schedule[weekKey] || {};
-    const tbody = document.getElementById('scheduleBody');
-    tbody.innerHTML = '';
-
-    Object.keys(scheduleData).forEach(period => {
-        const row = document.createElement('tr');
-
-        const periodCell = document.createElement('td');
-        periodCell.contentEditable = true;
-        periodCell.textContent = period;
-        periodCell.style.fontWeight = 'bold';
-        periodCell.style.background = '#f8f9ff';
-        periodCell.addEventListener('blur', () => {
-            const newPeriod = periodCell.textContent.trim();
-            if (newPeriod !== period && newPeriod) {
-                scheduleData[newPeriod] = scheduleData[period];
-                delete scheduleData[period];
-                saveData();
-            }
-        });
-        row.appendChild(periodCell);
-
-        for (let i = 0; i < 7; i++) {
-            const cell = document.createElement('td');
-            cell.contentEditable = true;
-            cell.textContent = scheduleData[period][i] || '';
-            cell.addEventListener('blur', () => {
-                scheduleData[period][i] = cell.textContent;
-                saveData();
-            });
-            row.appendChild(cell);
-        }
-
-        const deleteCell = document.createElement('td');
-        const deleteBtn = document.createElement('button');
-        deleteBtn.textContent = '×';
-        deleteBtn.style.color = 'white';
-        deleteBtn.style.background = '#dc3545';
-        deleteBtn.style.border = 'none';
-        deleteBtn.style.borderRadius = '4px';
-        deleteBtn.style.cursor = 'pointer';
-        deleteBtn.onclick = () => deleteScheduleRow(period);
-        deleteCell.appendChild(deleteBtn);
-        // row.appendChild(deleteCell);
-
-        tbody.appendChild(row);
-    });
-}
 
 
 
@@ -1050,7 +1001,6 @@ function updateScheduleDisplay() {
     saveData();
   }, 10000);
 });
-
 updateScheduleDisplay();
 </script>
 
