@@ -165,7 +165,6 @@ Just type naturally!"></textarea>
 
 
     <script>  // Note: JS begins here
-        console.log("a!!!myFunction is running!");
 
         // Global variables
         let currentCourse = null;
@@ -185,7 +184,6 @@ Just type naturally!"></textarea>
             setInterval(updateClock, 1000);
             setInterval(updateCurrentActivity, 60000);
             setInterval(autoSave, 5000); // Auto-save every 5 seconds
-            console.log("myFunction is running!");
         }
 
         function autoSave() {
@@ -194,6 +192,7 @@ Just type naturally!"></textarea>
 
         // Course management
        function updateCourseButtons() {
+                       console.log("updatecoursebuttons is running!");
   const buttonsContainer = document.getElementById('courseButtons');
   const addButton = buttonsContainer.querySelector('.add-course-btn');
 
@@ -322,7 +321,7 @@ Just type naturally!"></textarea>
         }
 
      function updateScheduleDisplay() {
-         console.log("myFunction is running!");
+         console.log("upschdisp is running!");
     const weekKey = getWeekKey();
     const scheduleData = appData.schedule[weekKey] || {};
     const tbody = document.getElementById('scheduleBody');
@@ -1029,7 +1028,7 @@ function updateScheduleDisplay() {
   }
 
   updateCourseButtons();
-  updateScheduleDisplay?.();
+  updateScheduleDisplay();
 }
 
 
