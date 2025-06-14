@@ -13,6 +13,14 @@
 .drag-handle {
   position: absolute;
   left: 2px;
+
+.period-cell {
+  position: relative;
+}
+
+.drag-handle {
+  position: absolute;
+  left: -25px;
   top: 50%;
   transform: translateY(-50%);
   font-size: 18px;
@@ -24,6 +32,7 @@
 
 tr:hover .drag-handle,
 .drag-handle:hover {
+tr:hover .drag-handle {
   display: inline;
 }
   
