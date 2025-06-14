@@ -16,7 +16,6 @@
             </div>
         </div>
 
-        
 
         <!-- Main content area -->
         <div id="mainContent">
@@ -35,7 +34,7 @@
                         <button class="nav-btn" onclick="nextWeek()">Next →</button>
                     </div>
                 </div>
-                <table class="schedule-table">
+                <table class="schedule-table"> <!-- Note: may need fixing -->
   <thead>
     <tr>
       <th></th> <!-- drag handle -->
@@ -165,7 +164,7 @@ Just type naturally!"></textarea>
     </div>
 
 
-    <script>
+    <script>  // Note: JS begins here
 
         // Global variables
         let currentCourse = null;
@@ -185,40 +184,6 @@ Just type naturally!"></textarea>
             setInterval(updateClock, 1000);
             setInterval(updateCurrentActivity, 60000);
             setInterval(autoSave, 5000); // Auto-save every 5 seconds
-        }
-
-        // Data persistence
-        function saveData() {
-            const dataToSave = {
-                courses: appData.courses,
-                schedule: appData.schedule,
-                weekOffset: currentWeekOffset
-            };
-            try {
-                // In a real environment, you would use localStorage here
-                // For Claude.ai artifacts, we'll keep it in memory
-                console.log('Data saved (in memory only)');
-            } catch (error) {
-                console.error('Error saving data:', error);
-            }
-        }
-
-        function loadData() {
-            try {
-                // In a real environment, you would load from localStorage here
-                // For Claude.ai artifacts, we'll use default data
-                if (!appData.courses || Object.keys(appData.courses).length === 0) {
-                    // Initialize with default courses
-                    appData.courses = {
-                        'AMC 10': { units: {}, notepad: '' },
-                        'AMC 12': { units: {}, notepad: '' },
-                        'AIME': { units: {}, notepad: '' }
-                    };
-                }
-                updateCourseButtons();
-            } catch (error) {
-                console.error('Error loading data:', error);
-            }
         }
 
         function autoSave() {
@@ -280,8 +245,6 @@ Just type naturally!"></textarea>
     buttonsContainer.insertBefore(courseWrapper, addButton);
   });
 }
-
-
         
         function reorderCourses(draggedName, targetName) {
   const entries = Object.entries(appData.courses);
@@ -312,7 +275,7 @@ Just type naturally!"></textarea>
             }
         }
 
-        // Schedule management
+        // Schedule management Note: May need fixing
         function initializeSchedule() {
             const defaultPeriods = [
                 'Wakeup (7:30)',
