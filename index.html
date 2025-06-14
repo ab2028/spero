@@ -37,7 +37,6 @@
                 <table class="schedule-table"> <!-- Note: may need fixing -->
   <thead>
     <tr>
-      <th></th>  <!-- drag handle -->
       <th>Period</th>
       <th>Sun</th>
       <th>Mon</th>
@@ -331,31 +330,28 @@ Just type naturally!"></textarea>
 
     entries.forEach(([period, days]) => {
         const row = document.createElement('tr');
-        row.draggable = true;
         row.dataset.period = period;
-        row.addEventListener('dragstart', (e) => {
-    e.dataTransfer.setData('text/plain', period); // Save the dragged period name
-});
         
 
 
-        // Drag handle cell ☰
-        const dragCell = document.createElement('td');
-        dragCell.textContent = '☰';
-        dragCell.style.cursor = 'grab';
-        dragCell.style.textAlign = 'center';
-        dragCell.style.color = '#888';
-        dragCell.style.width = '30px';
-        dragCell.style.userSelect = 'none';
-        dragCell.style.fontSize = '18px';
-        row.appendChild(dragCell);
 
         // Period cell
         const periodCell = document.createElement('td');
+        periodCell.classList.add('period-cell');
         periodCell.contentEditable = true;
         periodCell.textContent = period;
         periodCell.style.fontWeight = 'bold';
         periodCell.style.background = '#f8f9ff';
+
+        const handle = document.createElement('span');
+        handle.className = 'drag-handle';
+        handle.textContent = '☰';
+        handle.draggable = true;
+        handle.addEventListener('dragstart', (e) => {
+            e.dataTransfer.setData('text/plain', period);
+        });
+        periodCell.prepend(handle);
+
         periodCell.addEventListener('blur', () => {
             const newPeriod = periodCell.textContent.trim();
             if (newPeriod !== period && newPeriod) {
@@ -399,9 +395,6 @@ Just type naturally!"></textarea>
         
 
         // Drag events
-        row.addEventListener('dragstart', (e) => {
-            e.dataTransfer.setData('text/plain', period);
-        });
 
         row.addEventListener('dragover', (e) => {
             e.preventDefault();
