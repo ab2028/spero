@@ -664,6 +664,43 @@ Just type naturally!"></textarea>
         </div>
     </div>
 
+    let appData = {
+  courses: {},
+  schedule: {},
+  weekOffset: 0
+};
+
+function saveData() {
+  localStorage.setItem('appData', JSON.stringify(appData));
+}
+
+function loadData() {
+  const stored = localStorage.getItem('appData');
+  if (stored) {
+    appData = JSON.parse(stored);
+  } else {
+    // optional starter data
+    appData = {
+      courses: {
+        'Example Course': {
+          units: {
+            'Unit 1': [],
+            'Unit 2': []
+          },
+          notepad: ''
+        }
+      },
+      schedule: {},
+      weekOffset: 0
+    };
+  }
+
+  // After loading, update the UI
+  updateCourseButtons();
+  updateScheduleDisplay?.();
+}
+
+
     <script>
         // Global variables
         let currentCourse = null;
@@ -1385,6 +1422,8 @@ function updateScheduleDisplay() {
 
         // Initialize the app when page loads
         document.addEventListener('DOMContentLoaded', initApp);
+        loadData();
+
     </script>
 </body>
 </html>
