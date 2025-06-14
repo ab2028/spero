@@ -1389,29 +1389,40 @@ function updateScheduleDisplay() {
     localStorage.setItem('appData', JSON.stringify(appData));
   }
 
-  function loadData() {
-    const stored = localStorage.getItem('appData');
-    if (stored) {
-      appData = JSON.parse(stored);
-    } else {
-      appData = {
-        courses: {
-          'Example Course': {
-            units: {
-              'Unit 1': [],
-              'Unit 2': []
-            },
-            notepad: ''
-          }
-        },
-        schedule: {},
-        weekOffset: 0
-      };
-    }
-
-    updateCourseButtons();
-    updateScheduleDisplay?.();
+ function loadData() {
+  const stored = localStorage.getItem('appData');
+  if (stored) {
+    appData = JSON.parse(stored);
+  } else {
+    appData = {
+      courses: {
+        'Example Course': {
+          units: {
+            'Unit 1': [],
+            'Unit 2': []
+          },
+          notepad: ''
+        }
+      },
+      schedule: {},
+      weekOffset: 0
+    };
   }
+
+  // Ensure current week has a default schedule
+  const currentWeekKey = getWeekKey();
+  if (!appData.schedule[currentWeekKey]) {
+    appData.schedule[currentWeekKey] = {
+      "Period 1": ["", "", "", "", "", "", ""],
+      "Period 2": ["", "", "", "", "", "", ""],
+      "Period 3": ["", "", "", "", "", "", ""]
+    };
+  }
+
+  updateCourseButtons();
+  updateScheduleDisplay?.();
+}
+
 
    // Initialize the app when page loads
         document.addEventListener('DOMContentLoaded', initApp);
