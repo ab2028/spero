@@ -1110,7 +1110,13 @@ function updateUnitsDisplay() {
     saveData();
   }, 10000);
 });
-updateScheduleDisplay();
+window.addEventListener('DOMContentLoaded', () => {
+  updateScheduleDisplay();      // 👈 your function that draws the table
+  updateClock();         // optional if clock needs to start
+  updateCurrentActivity(); // if activity tracking is used
+});
+
+
 </script>
 
 </body>
