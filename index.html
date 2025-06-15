@@ -381,15 +381,24 @@ Just type naturally!"></textarea>
         //periodCell.style.fontWeight = 'bold';
         //periodCell.style.background = '#f8f9ff';
         periodCell.addEventListener('blur', () => {
-            const newPeriod = periodCell.textContent.trim();
-            if (newPeriod !== period && newPeriod) {
-                scheduleData[newPeriod] = scheduleData[period];
-                delete scheduleData[period];
-                saveData();
-                updateScheduleDisplay();
-                updateClock();
-            }
-        });
+    const newPeriod = periodCell.textContent.trim();
+    if (newPeriod !== period && newPeriod) {
+        const reordered = Object.entries(scheduleData);
+        const index = reordered.findIndex(([p]) => p === period);
+
+        if (index !== -1) {
+            // Replace the key while preserving order
+            reordered[index] = [newPeriod, scheduleData[period]];
+            delete scheduleData[period];
+            appData.schedule[weekKey] = Object.fromEntries(reordered);
+
+            saveData();
+            updateScheduleDisplay();
+            updateClock();
+        }
+    }
+});
+
         row.appendChild(periodCell);
 
         // Time cell
