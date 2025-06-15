@@ -96,6 +96,9 @@ body {
     text-align: center;
 }
 
+
+
+
 .schedule-table th {
     background: #3a3a3a;
 }
@@ -104,6 +107,14 @@ body {
     background: #242424;
     min-width: 100px;
     height: 40px;
+}
+
+.schedule-table td:first-child,
+.schedule-table th:first-child {
+    border-left: none;
+    border-top: none;
+    border-bottom: none;
+    background: #242424;
 }
 
 .schedule-table td[contenteditable="true"]:hover {
