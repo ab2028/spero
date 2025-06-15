@@ -295,15 +295,15 @@ Just type naturally!"></textarea>
         // Schedule management Note: May need fixing
         function initializeSchedule() {
             const defaultPeriods = [
-                { name: 'Wakeup', time: '7:30-8:00' },
+                { name: 'Wake up', time: '7:30-8:00' },
                 { name: 'P1', time: '8:00-9:45' },
                 { name: 'P2', time: '10:00-11:45' },
                 { name: 'Lunch', time: '12:00-1:00' },
                 { name: 'P3', time: '1:00-2:45' },
                 { name: 'P4', time: '3:00-4:45' },
-                { name: 'P5', time: '5:00-6:45' },
-                { name: 'P6', time: '7:00-8:45' },
-                { name: 'P7', time: '9:00-9:45' },
+                { name: 'Dinner', time: '5:00-6:00},
+                { name: 'P5', time: '6:00-7:45' },
+                { name: 'P6', time: '8:00-9:45' },
                 { name: 'Sleep', time: '10:00-10:30' }
             ];
 //NOTE(!appData.schedule[weekKey])
@@ -1174,7 +1174,7 @@ function updateUnitsDisplay() {
   } else {
     appData = {
       courses: {
-        'Example Course': {
+        'Example Course (click me)': {
           units: {
             'Unit 1': { notes: {} },
             'Unit 2': { notes: {} }
