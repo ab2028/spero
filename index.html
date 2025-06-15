@@ -20,8 +20,8 @@
         <!-- Main content area -->
         <div id="mainContent">
             <!-- Main timer -->
-           <div class="main-timer">
-  <div class="data-controls">
+          <div class="main-timer">
+  <div class="data-controls" id="mainDataControls">
     <button class="timer-btn export-btn" onclick="exportData()">Export</button>
     <button class="timer-btn import-btn" onclick="triggerImport()">Import</button>
     <input type="file" id="importFile" accept="application/json" style="display:none" onchange="handleImport(event)">
@@ -80,14 +80,13 @@
                     <h2 id="courseName">Course Dashboard</h2>
                 </div>
                 <div class="course-timer">
-                    <div class="timer-display" id="timerDisplay">00:00:00</div>
+                    <input type="text" class="timer-display" id="timerDisplay" value="25:00">
                     <div class="timer-controls">
-                        <input type="number" class="timer-input" id="timerMinutes" placeholder="Minutes" min="1" max="300">
                         <button class="timer-btn start-btn" onclick="startTimer()">Start</button>
                         <button class="timer-btn pause-btn" onclick="pauseTimer()">Pause</button>
                         <button class="timer-btn reset-btn" onclick="resetTimer()">Reset</button>
                     </div>
-                    <div class="data-controls">
+                    <div class="data-controls" id="dashDataControls">
                         <button class="timer-btn export-btn" onclick="exportData()">Export</button>
                         <button class="timer-btn import-btn" onclick="triggerImport()">Import</button>
                         <input type="file" id="importFile" accept="application/json" style="display:none" onchange="handleImport(event)">
@@ -638,8 +637,9 @@ function showCourseDashboard(courseName) {
     document.getElementById('unitView').style.display = 'none';
     document.getElementById('courseName').textContent = courseName;
     document.getElementById("courseDashboard").classList.remove("hidden");
-  document.getElementById("mainContent").classList.add("hidden"); // optional if you're hiding schedule
-      document.getElementById("unitView").classList.remove("hidden");
+    document.getElementById("mainContent").classList.add("hidden");
+    document.getElementById("unitView").classList.add("hidden");
+    document.getElementById('mainDataControls').classList.add('hidden');
 
     
     updateUnitsDisplay();
@@ -656,16 +656,50 @@ function showCourseDashboard(courseName) {
               document.getElementById("courseDashboard").classList.add("hidden");
   document.getElementById("mainContent").classList.remove("hidden");
                   document.getElementById("unitView").classList.add("hidden");
+            document.getElementById('mainDataControls').classList.remove('hidden');
 
             currentCourse = null;
             currentUnit = null;
         }
 
         // Timer functions
-        function startTimer() {
-            const minutes = parseInt(document.getElementById('timerMinutes').value) || 25;
+        function parseTimerInput() {
+            const val = document.getElementById('timerDisplay').value.trim();
+            const parts = val.split(':').map(n => parseInt(n, 10));
+            let total = 0;
+            if (parts.length === 3) {
+                total = parts[0] * 3600 + parts[1] * 60 + parts[2];
+            } else if (parts.length === 2) {
+                total = parts[0] * 60 + parts[1];
+            } else if (parts.length === 1 && !isNaN(parts[0])) {
+                total = parts[0] * 60;
+            } else {
+                total = 1500; // default 25:00
+            }
+            return { minutes: Math.floor(total / 60), seconds: total % 60 };
+        }
+
+        function formatTimerDisplay() {
             if (!courseTimer) {
-                courseTimer = { minutes: minutes, seconds: 0, isRunning: false };
+                return '00:00';
+            }
+            const totalSec = courseTimer.minutes * 60 + courseTimer.seconds;
+            const hrs = Math.floor(totalSec / 3600);
+            const mins = Math.floor((totalSec % 3600) / 60);
+            const secs = totalSec % 60;
+            if (hrs > 0) {
+                return `${hrs.toString().padStart(2,'0')}:${mins.toString().padStart(2,'0')}:${secs.toString().padStart(2,'0')}`;
+            }
+            return `${mins.toString().padStart(2,'0')}:${secs.toString().padStart(2,'0')}`;
+        }
+
+        function startTimer() {
+            const {minutes, seconds} = parseTimerInput();
+            if (!courseTimer) {
+                courseTimer = { minutes: minutes, seconds: seconds, isRunning: false };
+            } else {
+                courseTimer.minutes = minutes;
+                courseTimer.seconds = seconds;
             }
             
             if (!courseTimer.isRunning) {
@@ -682,8 +716,8 @@ function showCourseDashboard(courseName) {
         }
 
         function resetTimer() {
-            const minutes = parseInt(document.getElementById('timerMinutes').value) || 25;
-            courseTimer = { minutes: minutes, seconds: 0, isRunning: false };
+            const {minutes, seconds} = parseTimerInput();
+            courseTimer = { minutes: minutes, seconds: seconds, isRunning: false };
             clearInterval(timerInterval);
             updateTimerDisplay();
         }
@@ -707,17 +741,7 @@ function showCourseDashboard(courseName) {
         }
 
         function updateTimerDisplay() {
-            if (!courseTimer) {
-                document.getElementById('timerDisplay').textContent = '00:00:00';
-                return;
-            }
-            
-            const hours = Math.floor(courseTimer.minutes / 60);
-            const mins = courseTimer.minutes % 60;
-            const secs = courseTimer.seconds;
-            
-            document.getElementById('timerDisplay').textContent = 
-                `${hours.toString().padStart(2, '0')}:${mins.toString().padStart(2, '0')}:${secs.toString().padStart(2, '0')}`;
+            document.getElementById('timerDisplay').value = formatTimerDisplay();
         }
 
         // Data export/import
@@ -791,6 +815,8 @@ function showCourseDashboard(courseName) {
             currentUnit = unitName;
             document.getElementById('courseDashboard').style.display = 'none';
             document.getElementById('unitView').style.display = 'block';
+            document.getElementById('courseDashboard').classList.add('hidden');
+            document.getElementById('unitView').classList.remove('hidden');
             document.getElementById('unitName').textContent = unitName;
             updateNotesDisplay();
         }
@@ -798,6 +824,8 @@ function showCourseDashboard(courseName) {
         function goToDashboard() {
             document.getElementById('unitView').style.display = 'none';
             document.getElementById('courseDashboard').style.display = 'block';
+            document.getElementById('unitView').classList.add('hidden');
+            document.getElementById('courseDashboard').classList.remove('hidden');
             currentUnit = null;
         }
 
@@ -1130,13 +1158,21 @@ function updateUnitsDisplay() {
   const stored = localStorage.getItem('appData');
   if (stored) {
     appData = JSON.parse(stored);
+    // migrate old unit format
+    Object.values(appData.courses).forEach(course => {
+      Object.keys(course.units).forEach(u => {
+        if (!course.units[u] || !course.units[u].notes) {
+          course.units[u] = { notes: {} };
+        }
+      });
+    });
   } else {
     appData = {
       courses: {
         'Example Course': {
           units: {
-            'Unit 1': [],
-            'Unit 2': []
+            'Unit 1': { notes: {} },
+            'Unit 2': { notes: {} }
           },
           notepad: ''
         }
