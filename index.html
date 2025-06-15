@@ -28,8 +28,9 @@
   </div>
 
   <div class="timer-center">
-    <div class="current-time" id="currentTime">12:18:47 AM</div>
     <div class="current-activity" id="currentActivity">Free time</div>
+    <div class="current-time" id="currentTime">12:18:47 AM</div>
+    <div class="activity-detail" id="activityDetail">No scheduled activity</div>
   </div>
 </div>
 
@@ -51,13 +52,13 @@
       <th></th>  <!-- drag handle -->
       <th>Period</th>
       <th>Time</th>
-      <th>Sun</th>
-      <th>Mon</th>
-      <th>Tue</th>
-      <th>Wed</th>
-      <th>Thu</th>
-      <th>Fri</th>
-      <th>Sat</th>
+      <th data-day="0">Sun</th>
+      <th data-day="1">Mon</th>
+      <th data-day="2">Tue</th>
+      <th data-day="3">Wed</th>
+      <th data-day="4">Thu</th>
+      <th data-day="5">Fri</th>
+      <th data-day="6">Sat</th>
       <th></th>  <!-- delete button -->
     </tr>
   </thead>
@@ -326,6 +327,13 @@ Just type naturally!"></textarea>
             return weekStart.toISOString().split('T')[0];
         }
 
+        function getRealWeekKey() {
+            const today = new Date();
+            const weekStart = new Date(today);
+            weekStart.setDate(today.getDate() - today.getDay());
+            return weekStart.toISOString().split('T')[0];
+        }
+
         function updateWeekTitle() {
             const today = new Date();
             const weekStart = new Date(today);
@@ -400,12 +408,13 @@ Just type naturally!"></textarea>
         for (let i = 0; i < 7; i++) {
             const cell = document.createElement('td');
             cell.contentEditable = true;
+            cell.dataset.day = dayOrder[i];
             cell.textContent = days[dayOrder[i]] || '';
             cell.addEventListener('blur', () => {
                 scheduleData[period].days[dayOrder[i]] = cell.textContent;
                 saveData();
             });
-            
+
             row.appendChild(cell);
         }
 
@@ -521,9 +530,9 @@ Just type naturally!"></textarea>
             return { start: start.total, end: end.total, endHour: end.hour };
         }
 
-        function getTimeSlots() {
-            const weekKey = getWeekKey();
-            const scheduleData = appData.schedule[weekKey] || {};
+        function getTimeSlots(weekKey) {
+            const key = weekKey || getWeekKey();
+            const scheduleData = appData.schedule[key] || {};
             const slots = [];
             let prev = 0;
             for (const [name, info] of Object.entries(scheduleData)) {
@@ -540,7 +549,9 @@ Just type naturally!"></textarea>
             const now = new Date();
             const currentTime = now.getHours() * 60 + now.getMinutes();
 
-            const timeSlots = getTimeSlots();
+            const weekKey = getRealWeekKey();
+            const timeSlots = getTimeSlots(weekKey);
+            const scheduleData = appData.schedule[weekKey] || {};
             
             /* const timeSlots = [
                { start: 450, end: 480, name: "Wake up time! ☀️", time: "7:30-8:00" },
@@ -555,15 +566,46 @@ Just type naturally!"></textarea>
                { start: 1320, end: 1350, name: "Sleep time 😴", time: "10:00-10:30" }
             ]; */
 
-            let currentActivity = "Free time";
+            let currentPeriod = null;
             for (const slot of timeSlots) {
                 if (currentTime >= slot.start && currentTime < slot.end) {
-                    currentActivity = `${slot.name} (${slot.time})`;
+                    currentPeriod = slot;
                     break;
                 }
             }
 
-            document.getElementById('currentActivity').textContent = currentActivity;
+            let periodText = "Free time";
+            let activityDetail = "No scheduled activity";
+            const dayIndex = now.getDay();
+            if (currentPeriod) {
+                periodText = `${currentPeriod.name} (${currentPeriod.time})`;
+                const activity = (scheduleData[currentPeriod.name]?.days[dayIndex] || '').trim();
+                if (activity) activityDetail = activity; 
+            }
+
+            document.getElementById('currentActivity').textContent = periodText;
+            document.getElementById('activityDetail').textContent = activityDetail;
+            highlightCurrentSlot(currentPeriod ? currentPeriod.name : null, dayIndex);
+        }
+
+        function highlightCurrentSlot(periodName, dayIndex) {
+            document.querySelectorAll('.highlight-day').forEach(el => el.classList.remove('highlight-day'));
+            document.querySelectorAll('.highlight-period').forEach(el => el.classList.remove('highlight-period'));
+            document.querySelectorAll('.highlight-current').forEach(el => el.classList.remove('highlight-current'));
+
+            if (dayIndex !== null && dayIndex !== undefined) {
+                document.querySelector(`th[data-day="${dayIndex}"]`)?.classList.add('highlight-day');
+                document.querySelectorAll(`td[data-day="${dayIndex}"]`).forEach(td => td.classList.add('highlight-day'));
+            }
+
+            if (periodName) {
+                const row = document.querySelector(`tr[data-period="${CSS.escape(periodName)}"]`);
+                if (row) {
+                    row.classList.add('highlight-period');
+                    const cell = row.querySelector(`td[data-day="${dayIndex}"]`);
+                    if (cell) cell.classList.add('highlight-current');
+                }
+            }
         }
 
         // Course dashboard
