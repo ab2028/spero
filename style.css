@@ -103,7 +103,12 @@ body {
   left: 50%;
   transform: translateX(-50%);
   text-align: center;
+  width: 100%;              /* ensures it wraps within the parent box */
+  padding: 0 10px;          /* optional: avoid touching edges */
+  box-sizing: border-box;  /* so padding doesn't expand it */
+  overflow-wrap: break-word; /* just in case long words appear */
 }
+
 
 
 .data-controls {
