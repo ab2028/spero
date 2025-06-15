@@ -89,6 +89,9 @@ align-items: flex-start;     /* top-align vertically */
   margin-top: 10px; /* optional spacing from other content */
 }
 
+.add-row-btn {
+            margin-left: 20px;
+        }
     
 .export-btn { background: #17a2b8; color: #fff; }
 .import-btn { background: #6c757d; color: #fff; }
