@@ -640,6 +640,7 @@ function showCourseDashboard(courseName) {
     document.getElementById("mainContent").classList.add("hidden");
     document.getElementById("unitView").classList.add("hidden");
     document.getElementById('mainDataControls').classList.add('hidden');
+    document.getElementById('dashDataControls').classList.add('hidden');
 
 
     
@@ -658,6 +659,7 @@ function showCourseDashboard(courseName) {
   document.getElementById("mainContent").classList.remove("hidden");
                   document.getElementById("unitView").classList.add("hidden");
             document.getElementById('mainDataControls').classList.remove('hidden');
+            document.getElementById('dashDataControls').classList.remove('hidden');
 
             currentCourse = null;
             currentUnit = null;
@@ -834,8 +836,13 @@ function showCourseDashboard(courseName) {
         function updateNotesDisplay() {
             const notesGrid = document.getElementById('notesGrid');
             notesGrid.innerHTML = '';
-            
-            const notes = appData.courses[currentCourse].units[currentUnit].notes;
+            const unit = appData.courses[currentCourse].units[currentUnit];
+            if (Object.keys(unit.notes).length === 0) {
+                unit.notes['Section 1'] = {};
+                unit.notes['Section 2'] = {};
+                saveData();
+            }
+            const notes = unit.notes;
             Object.keys(notes).forEach(noteTitle => {
                 const noteSection = document.createElement('div');
                 noteSection.className = 'note-section';
@@ -1115,12 +1122,12 @@ function updateUnitsDisplay() {
     Object.keys(units).forEach(unitName => {
         const unitCard = document.createElement('div');
         unitCard.className = 'unit-card';
+        unitCard.style.cursor = 'pointer';
+        unitCard.onclick = () => showUnitView(unitName);
 
         const label = document.createElement('div');
         label.textContent = unitName;
         label.style.marginBottom = '10px';
-        label.style.cursor = 'pointer';
-        label.onclick = () => showUnitView(unitName);
 
         const deleteBtn = document.createElement('button');
         deleteBtn.textContent = 'Delete';
