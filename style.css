@@ -92,20 +92,23 @@ body {
 
 .main-timer {
   display: flex;
-  flex-direction: column;
-  align-items: stretch; /* ensures children (like .data-controls) can expand */
-  gap: 10px; /* optional spacing between elements */
+  justify-content: space-between;
+  align-items: flex-start;
+  flex-wrap: wrap;
+  gap: 10px;
 }
 
+.timer-info {
+  flex-grow: 1;
+}
 
 .data-controls {
-      width: 100%; /*  ensure it's full-width */
   display: flex;
+  gap: 10px;
+  align-items: flex-start;
   justify-content: flex-end;
-    align-items: flex-start;     /* top-align vertically */
-  gap: 10px; /* optional spacing between buttons */
-  margin-top: 10px; /* optional spacing from other content */
 }
+
 
 .add-row-btn {
             margin-left: 25px;
