@@ -119,6 +119,12 @@ body {
 .current-activity {
   color: #b0b0b0;
   font-size: 1em;
+  margin-bottom: 5px;
+}
+
+.activity-detail {
+  color: #b0b0b0;
+  font-size: 1em;
   margin-top: 5px;
 }
 
@@ -199,6 +205,19 @@ body {
     background: #444;
     outline: 2px solid #4facfe;
     outline-offset: -2px;
+}
+
+.highlight-day {
+    background: #333 !important;
+}
+
+tr.highlight-period td {
+    background: #333 !important;
+}
+
+.highlight-current {
+    background: #555 !important;
+    color: #fff;
 }
 
 .notepad-section {
