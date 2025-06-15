@@ -69,6 +69,7 @@ body {
 .data-controls {
   display: flex;
   justify-content: flex-end;
+align-items: flex-start;     /* top-align vertically */
   gap: 10px; /* optional spacing between buttons */
   margin-top: 10px; /* optional spacing from other content */
 }
