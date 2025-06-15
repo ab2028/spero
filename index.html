@@ -20,8 +20,8 @@
         <!-- Main content area -->
         <div id="mainContent">
             <!-- Main timer -->
-           <div class="main-timer">
-  <div class="data-controls">
+          <div class="main-timer">
+  <div class="data-controls" id="mainDataControls">
     <button class="timer-btn export-btn" onclick="exportData()">Export</button>
     <button class="timer-btn import-btn" onclick="triggerImport()">Import</button>
     <input type="file" id="importFile" accept="application/json" style="display:none" onchange="handleImport(event)">
@@ -86,7 +86,7 @@
                         <button class="timer-btn pause-btn" onclick="pauseTimer()">Pause</button>
                         <button class="timer-btn reset-btn" onclick="resetTimer()">Reset</button>
                     </div>
-                    <div class="data-controls">
+                    <div class="data-controls" id="dashDataControls">
                         <button class="timer-btn export-btn" onclick="exportData()">Export</button>
                         <button class="timer-btn import-btn" onclick="triggerImport()">Import</button>
                         <input type="file" id="importFile" accept="application/json" style="display:none" onchange="handleImport(event)">
@@ -639,6 +639,8 @@ function showCourseDashboard(courseName) {
     document.getElementById("courseDashboard").classList.remove("hidden");
     document.getElementById("mainContent").classList.add("hidden");
     document.getElementById("unitView").classList.add("hidden");
+    document.getElementById('mainDataControls').classList.add('hidden');
+
 
     
     updateUnitsDisplay();
@@ -655,6 +657,7 @@ function showCourseDashboard(courseName) {
               document.getElementById("courseDashboard").classList.add("hidden");
   document.getElementById("mainContent").classList.remove("hidden");
                   document.getElementById("unitView").classList.add("hidden");
+            document.getElementById('mainDataControls').classList.remove('hidden');
 
             currentCourse = null;
             currentUnit = null;
@@ -813,6 +816,8 @@ function showCourseDashboard(courseName) {
             currentUnit = unitName;
             document.getElementById('courseDashboard').style.display = 'none';
             document.getElementById('unitView').style.display = 'block';
+            document.getElementById('courseDashboard').classList.add('hidden');
+            document.getElementById('unitView').classList.remove('hidden');
             document.getElementById('unitName').textContent = unitName;
             updateNotesDisplay();
         }
@@ -820,6 +825,8 @@ function showCourseDashboard(courseName) {
         function goToDashboard() {
             document.getElementById('unitView').style.display = 'none';
             document.getElementById('courseDashboard').style.display = 'block';
+            document.getElementById('unitView').classList.add('hidden');
+            document.getElementById('courseDashboard').classList.remove('hidden');
             currentUnit = null;
         }
 
