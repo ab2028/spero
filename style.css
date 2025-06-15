@@ -65,8 +65,9 @@ body {
         .nav-btn {
             align-items: flex-start;
             border: none;
-            padding: 8px 30px;
+            padding: 8px 16px;
             border-radius: 6px;
+            margin-left: 20px;
             cursor: pointer;
         }
 
