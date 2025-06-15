@@ -90,6 +90,14 @@ body {
     background: #4a4a4a;
 }
 
+.main-timer {
+  display: flex;
+  flex-direction: column;
+  align-items: stretch; /* ensures children (like .data-controls) can expand */
+  gap: 10px; /* optional spacing between elements */
+}
+
+
 .data-controls {
       width: 100%; /*  ensure it's full-width */
   display: flex;
