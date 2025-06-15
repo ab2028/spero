@@ -127,11 +127,13 @@ body {
   display: flex;
   gap: 10px;
   justify-content: flex-end;
-  align-items: flex-start;
+  align-items: center; /* 🔼 vertical center inside the container */
   position: absolute;
-  top: 10px;
   right: 20px;
+  top: 50%;
+  transform: translateY(-50%); /* 🔼 center vertically */
 }
+
 
 .export-btn { background: #17a2b8; color: #fff; }
 .import-btn { background: #6c757d; color: #fff; }
