@@ -640,6 +640,8 @@ function showCourseDashboard(courseName) {
     document.getElementById("mainContent").classList.add("hidden");
     document.getElementById("unitView").classList.add("hidden");
     document.getElementById('mainDataControls').classList.add('hidden');
+        document.querySelector('.data-controls').classList.add('hidden'); // 👈 Hides buttons
+
 
 
     
@@ -658,6 +660,8 @@ function showCourseDashboard(courseName) {
   document.getElementById("mainContent").classList.remove("hidden");
                   document.getElementById("unitView").classList.add("hidden");
             document.getElementById('mainDataControls').classList.remove('hidden');
+                document.querySelector('.data-controls').classList.remove('hidden'); // 👈 Shows buttons
+
 
             currentCourse = null;
             currentUnit = null;
