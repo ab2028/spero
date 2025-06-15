@@ -353,7 +353,7 @@ Just type naturally!"></textarea>
         const dragCell = document.createElement('td');
         dragCell.textContent = '☰';
         dragCell.style.cursor = 'grab';
-        dragCell.style.textAlign = 'center';
+        dragCell.style.textAlign = 'right';
         dragCell.style.color = '#888';
         dragCell.style.width = '30px';
         dragCell.style.userSelect = 'none';
@@ -364,8 +364,8 @@ Just type naturally!"></textarea>
         const periodCell = document.createElement('td');
         periodCell.contentEditable = true;
         periodCell.textContent = period;
-        periodCell.style.fontWeight = 'bold';
-        periodCell.style.background = '#f8f9ff';
+        //periodCell.style.fontWeight = 'bold';
+        //periodCell.style.background = '#f8f9ff';
         periodCell.addEventListener('blur', () => {
             const newPeriod = periodCell.textContent.trim();
             if (newPeriod !== period && newPeriod) {
