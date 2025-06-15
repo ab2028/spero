@@ -98,11 +98,13 @@ body {
   gap: 10px;
 }
 
-.timer-info {
-  flex-grow: 1;
-text-align: center;
-
+.timer-center {
+  position: absolute;
+  left: 50%;
+  transform: translateX(-50%);
+  text-align: center;
 }
+
 
 .data-controls {
   display: flex;
