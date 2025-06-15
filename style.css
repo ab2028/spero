@@ -238,6 +238,22 @@
             gap: 10px;
         }
 
+        .data-controls {
+            margin-left: auto;
+            display: flex;
+            gap: 10px;
+        }
+
+        .export-btn {
+            background: #17a2b8;
+            color: white;
+        }
+
+        .import-btn {
+            background: #6c757d;
+            color: white;
+        }
+
         .timer-btn {
             padding: 8px 16px;
             border: none;
