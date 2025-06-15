@@ -21,14 +21,17 @@
         <div id="mainContent">
             <!-- Main timer -->
             <div class="main-timer">
-                <div class="current-time" id="currentTime"></div>
-                <div class="current-activity" id="currentActivity">Loading schedule...</div>
-                <div class="data-controls">
-                    <button class="timer-btn export-btn" onclick="exportData()">Export</button>
-                    <button class="timer-btn import-btn" onclick="triggerImport()">Import</button>
-                    <input type="file" id="importFile" accept="application/json" style="display:none" onchange="handleImport(event)">
-                </div>
-            </div>
+  <div class="timer-info">
+    <div class="current-time" id="currentTime"></div>
+    <div class="current-activity" id="currentActivity">Loading schedule...</div>
+  </div>
+  <div class="data-controls">
+    <button class="timer-btn export-btn" onclick="exportData()">Export</button>
+    <button class="timer-btn import-btn" onclick="triggerImport()">Import</button>
+    <input type="file" id="importFile" accept="application/json" style="display:none" onchange="handleImport(event)">
+  </div>
+</div>
+
 
             <!-- Schedule section -->
             <div class="schedule-section">
