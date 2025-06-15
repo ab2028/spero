@@ -401,7 +401,6 @@ Just type naturally!"></textarea>
             scheduleData[period].time = timeCell.textContent.trim();
             saveData();
             updateCurrentActivity();
-            updateClock();
         });
         row.appendChild(timeCell);
         
@@ -415,12 +414,12 @@ Just type naturally!"></textarea>
             cell.textContent = days[dayOrder[i]] || '';
             cell.addEventListener('blur', () => {
                 scheduleData[period].days[dayOrder[i]] = cell.textContent;
-                saveData();
+                saveData(); 
             });
             cell.addEventListener('input', () => {
     scheduleData[period].days[dayOrder[i]] = cell.textContent;
-    updateClock();
-                console.log("input detected!!!")
+                      updateCurrentActivity();
+
 });
 
 
