@@ -85,17 +85,17 @@ body {
 .data-controls {
   display: flex;
   justify-content: flex-end;
-align-items: flex-start;     /* top-align vertically */
+    align-items: flex-start;     /* top-align vertically */
   gap: 10px; /* optional spacing between buttons */
   margin-top: 10px; /* optional spacing from other content */
 }
 
 .add-row-btn {
             margin-left: 25px;
-        }
+        } 
     
-.export-btn { background: #17a2b8; color: #fff; }
-.import-btn { background: #6c757d; color: #fff; }
+.export-btn { background: #17a2b8; color: #fff; align-items: flex-start;}
+.import-btn { background: #6c757d; color: #fff; align-items: flex-start;}
 .start-btn { background: #28a745; color: #fff; }
 .pause-btn { background: #ffc107; color: #333; }
 .reset-btn { background: #dc3545; color: #fff; }
