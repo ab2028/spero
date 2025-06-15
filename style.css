@@ -109,12 +109,13 @@ body {
     height: 40px;
 }
 
-.schedule-table td:first-child,
+.schedule-table td:first-child, /*override*/ 
 .schedule-table th:first-child {
     border-left: none;
     border-top: none;
     border-bottom: none;
     background: transparent;
+    min-width: 20px;
 }
 
 .schedule-table td[contenteditable="true"]:hover {
