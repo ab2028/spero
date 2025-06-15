@@ -20,17 +20,19 @@
         <!-- Main content area -->
         <div id="mainContent">
             <!-- Main timer -->
-            <div class="main-timer">
-  <div class="timer-center">
-    <div class="current-time" id="currentTime"></div>
-    <div class="current-activity" id="currentActivity">Loading schedule...</div>
-  </div>
+           <div class="main-timer">
   <div class="data-controls">
     <button class="timer-btn export-btn" onclick="exportData()">Export</button>
     <button class="timer-btn import-btn" onclick="triggerImport()">Import</button>
     <input type="file" id="importFile" accept="application/json" style="display:none" onchange="handleImport(event)">
   </div>
+
+  <div class="timer-center">
+    <div class="current-time" id="currentTime">12:18:47 AM</div>
+    <div class="current-activity" id="currentActivity">Free time</div>
+  </div>
 </div>
+
 
 
 
