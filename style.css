@@ -46,7 +46,7 @@ body {
 .modal-btn {
     background: #3a3a3a;
     color: #e0e0e0;
-    /*border: 1px solid #555;*/
+    border: 1px solid #3a3a3a;
     padding: 8px 16px;
     border-radius: 6px;
     cursor: pointer;
