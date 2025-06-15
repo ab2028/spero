@@ -66,6 +66,14 @@ body {
     background: #4a4a4a;
 }
 
+.data-controls {
+  display: flex;
+  justify-content: flex-end;
+  gap: 10px; /* optional spacing between buttons */
+  margin-top: 10px; /* optional spacing from other content */
+}
+
+    
 .export-btn { background: #17a2b8; color: #fff; }
 .import-btn { background: #6c757d; color: #fff; }
 .start-btn { background: #28a745; color: #fff; }
