@@ -23,6 +23,11 @@
             <div class="main-timer">
                 <div class="current-time" id="currentTime"></div>
                 <div class="current-activity" id="currentActivity">Loading schedule...</div>
+                <div class="data-controls">
+                    <button class="timer-btn export-btn" onclick="exportData()">Export</button>
+                    <button class="timer-btn import-btn" onclick="triggerImport()">Import</button>
+                    <input type="file" id="importFile" accept="application/json" style="display:none" onchange="handleImport(event)">
+                </div>
             </div>
 
             <!-- Schedule section -->
@@ -634,6 +639,43 @@ Just type naturally!"></textarea>
             
             document.getElementById('timerDisplay').textContent = 
                 `${hours.toString().padStart(2, '0')}:${mins.toString().padStart(2, '0')}:${secs.toString().padStart(2, '0')}`;
+        }
+
+        // Data export/import
+        function exportData() {
+            const dataStr = JSON.stringify(appData, null, 2);
+            const blob = new Blob([dataStr], { type: 'application/json' });
+            const url = URL.createObjectURL(blob);
+            const a = document.createElement('a');
+            a.href = url;
+            a.download = 'lms-data.json';
+            a.click();
+            URL.revokeObjectURL(url);
+        }
+
+        function triggerImport() {
+            document.getElementById('importFile').click();
+        }
+
+        function handleImport(event) {
+            const file = event.target.files[0];
+            if (!file) return;
+            const reader = new FileReader();
+            reader.onload = function(e) {
+                try {
+                    const imported = JSON.parse(e.target.result);
+                    appData = imported;
+                    saveData();
+                    updateCourseButtons();
+                    updateScheduleDisplay();
+                    if (currentCourse) updateUnitsDisplay();
+                    if (currentCourse && currentUnit) updateNotesDisplay();
+                    alert('Import successful!');
+                } catch (err) {
+                    alert('Invalid file');
+                }
+            };
+            reader.readAsText(file);
         }
 
         // Unit management
