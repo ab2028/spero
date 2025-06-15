@@ -54,6 +54,22 @@ body {
     transition: background 0.3s ease;
 }
 
+ .week-nav {
+            display: flex;
+            gap: 10px;
+            align-items: center;
+        }
+
+        .nav-btn {
+            background: #4facfe;
+            color: white;
+            border: none;
+            padding: 8px 16px;
+            border-radius: 6px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+
 .course-btn:hover,
 .add-course-btn:hover,
 .nav-btn:hover,
