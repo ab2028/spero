@@ -129,7 +129,7 @@ align-items: flex-start;     /* top-align vertically */
 
 .schedule-table td:last-child, /*override*/ 
 .schedule-table th:last-child {
-    border-left: none;
+    border-right: none;
     border-top: none;
     border-bottom: none;
     background: transparent;
