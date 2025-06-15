@@ -66,7 +66,7 @@
         </div>
 
         <!-- Course Dashboard -->
-        <div class="course-dashboard" id="courseDashboard">
+        <div class="course-dashboard hidden" id="courseDashboard">
             <div class="dashboard-header">
                 <div>
                     <button class="back-btn" onclick="showMainContent()">← Back to Schedule</button>
@@ -561,23 +561,28 @@ Just type naturally!"></textarea>
         }
 
         // Course dashboard
-        function showCourseDashboard(courseName) {
-            currentCourse = courseName;
-            document.getElementById('mainContent').style.display = 'none';
-            document.getElementById('courseDashboard').style.display = 'block';
-            document.getElementById('unitView').style.display = 'none';
-            document.getElementById('courseName').textContent = courseName;
-            
-            updateUnitsDisplay();
-            
-            // Load notepad content
-            const notepad = document.getElementById('courseNotepad');
-            notepad.value = appData.courses[courseName].notepad || '';
-            notepad.addEventListener('input', () => {
-                appData.courses[courseName].notepad = notepad.value;
-                saveData();
-            });
-        }
+        // Outside the function (global or init):
+const notepad = document.getElementById('courseNotepad');
+notepad.addEventListener('input', () => {
+    if (currentCourse) {
+        appData.courses[currentCourse].notepad = notepad.value;
+        saveData();
+    }
+});
+
+function showCourseDashboard(courseName) {
+    currentCourse = courseName;
+    document.getElementById('mainContent').style.display = 'none';
+    document.getElementById('courseDashboard').style.display = 'block';
+    document.getElementById('unitView').style.display = 'none';
+    document.getElementById('courseName').textContent = courseName;
+    
+    updateUnitsDisplay();
+
+    // Load notepad content
+    notepad.value = appData.courses[courseName].notepad || '';
+}
+
 
         function showMainContent() {
             document.getElementById('mainContent').style.display = 'block';
