@@ -54,6 +54,14 @@ body {
     transition: background 0.3s ease;
 }
 
+.schedule-header {
+  display: flex;
+  justify-content: space-between; /* left and right alignment */
+  align-items: flex-start;        /* 🔼 top-align */
+  flex-wrap: wrap;
+}
+
+
  .week-nav {
             display: flex;
             gap: 10px;
