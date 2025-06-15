@@ -127,6 +127,15 @@ align-items: flex-start;     /* top-align vertically */
     min-width: 20px;
 }
 
+.schedule-table td:last-child, /*override*/ 
+.schedule-table th:last-child {
+    border-left: none;
+    border-top: none;
+    border-bottom: none;
+    background: transparent;
+    min-width: 20px;
+}
+
 .schedule-table td[contenteditable="true"]:hover {
     background: #333;
 }
