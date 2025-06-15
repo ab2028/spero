@@ -415,6 +415,7 @@ Just type naturally!"></textarea>
             cell.addEventListener('blur', () => {
                 scheduleData[period].days[dayOrder[i]] = cell.textContent;
                 saveData();
+                updateClock();
             });
 
             row.appendChild(cell);
