@@ -101,7 +101,7 @@
         </div>
 
         <!-- Unit View -->
-        <div class="unit-view" id="unitView">
+        <div class="unit-view hidden" id="unitView">
             <div class="unit-header">
                 <button class="back-btn" onclick="goToDashboard()">← Back to Course</button>
                 <h2 id="unitName">Unit View</h2>
@@ -578,6 +578,8 @@ function showCourseDashboard(courseName) {
     document.getElementById('courseName').textContent = courseName;
     document.getElementById("courseDashboard").classList.remove("hidden");
   document.getElementById("mainContent").classList.add("hidden"); // optional if you're hiding schedule
+      document.getElementById("unitView").classList.remove("hidden");
+
     
     updateUnitsDisplay();
 
@@ -592,6 +594,8 @@ function showCourseDashboard(courseName) {
             document.getElementById('unitView').style.display = 'none';
               document.getElementById("courseDashboard").classList.add("hidden");
   document.getElementById("mainContent").classList.remove("hidden");
+                  document.getElementById("unitView").classList.add("hidden");
+
             currentCourse = null;
             currentUnit = null;
         }
