@@ -388,6 +388,7 @@ Just type naturally!"></textarea>
                 saveData();
                 updateScheduleDisplay();
                 updateClock();
+                console.log("boring input detected")
             }
         });
         row.appendChild(periodCell);
@@ -419,6 +420,7 @@ Just type naturally!"></textarea>
             cell.addEventListener('input', () => {
     scheduleData[period].days[dayOrder[i]] = cell.textContent;
     updateClock();
+                console.log("input detected!!!")
 });
 
 
