@@ -47,6 +47,10 @@
                         <button class="nav-btn" onclick="previousWeek()">← Previous</button>
                         <button class="nav-btn" onclick="nextWeek()">Next →</button>
                     </div>
+                    <div class="history-nav">
+                        <button class="nav-btn" id="undoActionBtn" onclick="undoSchedule()">Undo</button>
+                        <button class="nav-btn" id="redoActionBtn" onclick="redoSchedule()">Redo</button>
+                    </div>
                 </div>
                 <table class="schedule-table"> <!-- Note: may need fixing -->
   <thead>
@@ -207,6 +211,10 @@ Just type naturally!"></textarea>
             { name: 'Sleep', time: '10:00-10:30' }
         ];
 
+        // --- History for undo/redo ---
+        let scheduleHistory = [];
+        let historyIndex = -1;
+
         // Initialize app
         function initApp() {
             loadData();
@@ -317,9 +325,10 @@ Just type naturally!"></textarea>
                     appData.schedule[weekKey][p.name] = { time: p.time, days: ['', '', '', '', '', '', ''] };
                 });
             }
-            
+
             updateScheduleDisplay();
             updateWeekTitle();
+            initScheduleHistory();
         }
 
         function getWeekKey() {
@@ -340,10 +349,55 @@ Just type naturally!"></textarea>
             const today = new Date();
             const weekStart = new Date(today);
             weekStart.setDate(today.getDate() - today.getDay() + (currentWeekOffset * 7));
-            
+
             const options = { month: 'long', day: 'numeric', year: 'numeric' };
-            document.getElementById('weekTitle').textContent = 
+            document.getElementById('weekTitle').textContent =
                 `Week of ${weekStart.toLocaleDateString('en-US', options)}`;
+        }
+
+        // ----- History Helpers -----
+        function initScheduleHistory() {
+            const weekKey = getWeekKey();
+            scheduleHistory = [JSON.parse(JSON.stringify(appData.schedule[weekKey] || {}))];
+            historyIndex = 0;
+            updateUndoRedoButtons();
+        }
+
+        function pushScheduleState() {
+            const weekKey = getWeekKey();
+            scheduleHistory = scheduleHistory.slice(0, historyIndex + 1);
+            scheduleHistory.push(JSON.parse(JSON.stringify(appData.schedule[weekKey] || {})));
+            historyIndex++;
+            updateUndoRedoButtons();
+        }
+
+        function undoSchedule() {
+            if (historyIndex > 0) {
+                historyIndex--;
+                const weekKey = getWeekKey();
+                appData.schedule[weekKey] = JSON.parse(JSON.stringify(scheduleHistory[historyIndex]));
+                updateScheduleDisplay();
+                saveData();
+                updateUndoRedoButtons();
+            }
+        }
+
+        function redoSchedule() {
+            if (historyIndex < scheduleHistory.length - 1) {
+                historyIndex++;
+                const weekKey = getWeekKey();
+                appData.schedule[weekKey] = JSON.parse(JSON.stringify(scheduleHistory[historyIndex]));
+                updateScheduleDisplay();
+                saveData();
+                updateUndoRedoButtons();
+            }
+        }
+
+        function updateUndoRedoButtons() {
+            const undoBtn = document.getElementById('undoActionBtn');
+            const redoBtn = document.getElementById('redoActionBtn');
+            if (undoBtn) undoBtn.disabled = historyIndex <= 0;
+            if (redoBtn) redoBtn.disabled = historyIndex >= scheduleHistory.length - 1;
         }
 
      function updateScheduleDisplay() {
@@ -397,6 +451,7 @@ Just type naturally!"></textarea>
             saveData();
             updateScheduleDisplay();
             updateClock();
+            pushScheduleState();
         }
     }
 });
@@ -411,6 +466,7 @@ Just type naturally!"></textarea>
             scheduleData[period].time = timeCell.textContent.trim();
             saveData();
             updateCurrentActivity();
+            pushScheduleState();
         });
         row.appendChild(timeCell);
         
@@ -424,8 +480,10 @@ Just type naturally!"></textarea>
             cell.textContent = days[dayOrder[i]] || '';
             cell.addEventListener('blur', () => {
                 scheduleData[period].days[dayOrder[i]] = cell.textContent;
-                saveData(); 
+                saveData();
                       updateCurrentActivity();
+
+            pushScheduleState();
 
 });
 
@@ -479,6 +537,7 @@ Just type naturally!"></textarea>
                 appData.schedule[weekKey] = Object.fromEntries(reordered);
                 saveData();
                 updateScheduleDisplay();
+                pushScheduleState();
             }
         });
 
@@ -493,11 +552,12 @@ Just type naturally!"></textarea>
             if (!appData.schedule[weekKey]) {
                 appData.schedule[weekKey] = {};
             }
-            
+
             const newPeriod = `New Period ${Object.keys(appData.schedule[weekKey]).length + 1}`;
             appData.schedule[weekKey][newPeriod] = { time: '', days: ['', '', '', '', '', '', ''] };
             updateScheduleDisplay();
             saveData();
+            pushScheduleState();
         }
 
         function previousWeek() {
@@ -1045,14 +1105,16 @@ function deleteScheduleRow(periodName) {
             weekKey: weekKey,
             data: appData.schedule[weekKey][periodName]
         };
-        delete appData.schedule[weekKey][periodName];
-        updateScheduleDisplay();
-        saveData();
-        showUndoButton('Schedule row', () => {
-            appData.schedule[lastDeleted.weekKey][lastDeleted.name] = lastDeleted.data;
-            updateScheduleDisplay();
-            saveData();
-        });
+         delete appData.schedule[weekKey][periodName];
+         updateScheduleDisplay();
+         saveData();
+        pushScheduleState();
+         showUndoButton('Schedule row', () => {
+             appData.schedule[lastDeleted.weekKey][lastDeleted.name] = lastDeleted.data;
+             updateScheduleDisplay();
+             saveData();
+            pushScheduleState();
+         });
     }
 }
 
