@@ -81,25 +81,23 @@ body {
 .schedule-header {
   display: flex;
   justify-content: space-between; /* left and right alignment */
-  align-items: flex-start;        /* 🔼 top-align */
+  align-items: center;
   flex-wrap: wrap;
 }
 
 
 .week-nav {
-            display: flex;
-            gap: 10px;
-            justify-content: flex-end;
-            margin-left: 20px;
-            align-items: flex-start;
-        }
+  display: flex;
+  gap: 10px;
+  align-items: center;
+}
 
         .history-nav {
             display: flex;
             gap: 10px;
             justify-content: flex-end;
             margin-left: 20px;
-            align-items: flex-start;
+            align-items: center;
         }
 
         .nav-btn {

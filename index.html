@@ -42,9 +42,9 @@
             <!-- Schedule section -->
             <div class="schedule-section">
                 <div class="schedule-header">
-                    <h2 id="weekTitle">Week of</h2>
                     <div class="week-nav">
                         <button class="nav-btn" onclick="previousWeek()">← Previous</button>
+                        <h2 id="weekTitle"></h2>
                         <button class="nav-btn" onclick="nextWeek()">Next →</button>
                     </div>
                     <div class="history-nav">
@@ -349,10 +349,12 @@ Just type naturally!"></textarea>
             const today = new Date();
             const weekStart = new Date(today);
             weekStart.setDate(today.getDate() - today.getDay() + (currentWeekOffset * 7));
+            const weekEnd = new Date(weekStart);
+            weekEnd.setDate(weekStart.getDate() + 6);
 
-            const options = { month: 'long', day: 'numeric', year: 'numeric' };
+            const options = { month: 'numeric', day: 'numeric' };
             document.getElementById('weekTitle').textContent =
-                `Week of ${weekStart.toLocaleDateString('en-US', options)}`;
+                `${weekStart.toLocaleDateString('en-US', options)}-${weekEnd.toLocaleDateString('en-US', options)}`;
         }
 
         // ----- History Helpers -----
