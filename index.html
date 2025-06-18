@@ -489,6 +489,7 @@ Just type naturally!"></textarea>
 
         entries.forEach(({ name: period, info, parsed }) => {
 
+
             const box = document.createElement('div');
             box.className = 'event-box';
             box.dataset.period = period;
@@ -498,6 +499,7 @@ Just type naturally!"></textarea>
 
             const title = document.createElement('div');
             title.className = 'event-title';
+
             title.textContent = period;
             if (special) {
                 title.contentEditable = true;
@@ -512,6 +514,7 @@ Just type naturally!"></textarea>
                     pushScheduleState();
                 });
             }
+
             box.appendChild(title);
 
             const task = document.createElement('div');
