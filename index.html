@@ -441,6 +441,19 @@ Just type naturally!"></textarea>
     const calendar = document.getElementById('scheduleCalendar');
     calendar.innerHTML = '';
 
+    const timeCol = document.createElement('div');
+    timeCol.className = 'time-column';
+    for (let h = 0; h < 24; h++) {
+        const lbl = document.createElement('div');
+        lbl.className = 'time-label';
+        const hour = h % 12 === 0 ? 12 : h % 12;
+        const suffix = h < 12 ? 'AM' : 'PM';
+        lbl.textContent = `${hour} ${suffix}`;
+        lbl.style.top = (h * 60 * PIXELS_PER_MINUTE) + 'px';
+        timeCol.appendChild(lbl);
+    }
+    calendar.appendChild(timeCol);
+
     const weekStart = new Date(weekKey);
     const dayNames = ['Sun','Mon','Tue','Wed','Thu','Fri','Sat'];
     for (let d = 0; d < 7; d++) {
@@ -469,9 +482,13 @@ Just type naturally!"></textarea>
         dayEvents.className = 'day-events';
         column.appendChild(dayEvents);
 
-        Object.entries(scheduleData).forEach(([period, info]) => {
-            const parsed = parseTimeRange(info.time);
-            if (!parsed) return;
+        const entries = Object.entries(scheduleData)
+            .map(([p, info]) => ({ name: p, info, parsed: parseTimeRange(info.time) }))
+            .filter(e => e.parsed)
+            .sort((a, b) => a.parsed.start - b.parsed.start);
+
+        entries.forEach(({ name: period, info, parsed }) => {
+
 
             const box = document.createElement('div');
             box.className = 'event-box';
@@ -482,7 +499,22 @@ Just type naturally!"></textarea>
 
             const title = document.createElement('div');
             title.className = 'event-title';
-            title.textContent = `${period} (${info.time})`;
+
+            title.textContent = period;
+            if (special) {
+                title.contentEditable = true;
+                title.addEventListener('blur', () => {
+                    const newName = title.textContent.trim() || period;
+                    if (newName !== period) {
+                        delete scheduleData[period];
+                        scheduleData[newName] = info;
+                        updateScheduleDisplay();
+                    }
+                    saveData();
+                    pushScheduleState();
+                });
+            }
+
             box.appendChild(title);
 
             const task = document.createElement('div');
