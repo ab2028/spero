@@ -245,17 +245,8 @@ body {
     outline-offset: -2px;
 }
 
-.highlight-day {
-    background: #333 !important;
-}
-
-tr.highlight-period td {
-    background: #333 !important;
-}
-
 .highlight-current {
-    background: #555 !important;
-    color: #fff;
+    outline: 2px solid #ff5252;
 }
 
 .notepad-section {
@@ -379,4 +370,108 @@ tr.highlight-period td {
     .notes-grid { grid-template-columns: 1fr; }
     .course-buttons { justify-content: center; }
     .current-time { font-size: 2em; }
+}
+
+/* Calendar layout */
+.calendar-container {
+    position: relative;
+    display: flex;
+    height: 720px;
+    border: 1px solid #555;
+    margin-top: 20px;
+}
+
+.time-column {
+    width: 60px;
+    position: relative;
+    border-right: 1px solid #444;
+    background: repeating-linear-gradient(
+        to bottom,
+        #555 0,
+        #555 1px,
+        transparent 1px,
+        transparent 30px
+    );
+    font-size: 0.75em;
+    color: #e0e0e0;
+}
+
+.time-label {
+    position: absolute;
+    left: 2px;
+    height: 30px;
+    transform: translateY(-50%);
+    pointer-events: none;
+}
+
+.day-column {
+    flex: 1;
+    border-left: 1px solid #444;
+    position: relative;
+}
+
+.day-column:first-child {
+    border-left: none;
+}
+
+.day-header {
+    text-align: center;
+    background: #3a3a3a;
+    padding: 4px;
+    border-bottom: 1px solid #444;
+    font-size: 0.9em;
+}
+
+.day-toggle {
+    width: 100%;
+    background: #2b2b2b;
+    border: none;
+    color: #e0e0e0;
+    font-size: 0.75em;
+    padding: 2px 0;
+    cursor: pointer;
+}
+
+.day-events {
+    position: relative;
+    height: calc(100% - 40px);
+    background: repeating-linear-gradient(
+        to bottom,
+        #555 0,
+        #555 1px,
+        transparent 1px,
+        transparent 30px
+    );
+}
+
+.event-box {
+    position: absolute;
+    left: 2px;
+    right: 2px;
+    background: #4a4a4a;
+    border: 1px solid #666;
+    border-radius: 4px;
+    overflow: hidden;
+    font-size: 0.75em;
+    color: #fff;
+}
+
+.event-title {
+    background: rgba(0,0,0,0.3);
+    font-weight: bold;
+    padding: 2px;
+}
+
+.event-task {
+    padding: 2px;
+}
+
+.current-time-bar {
+    position: absolute;
+    left: 60px;
+    right: 0;
+    height: 2px;
+    background: red;
+    z-index: 10;
+    pointer-events: none;
 }
