@@ -1086,87 +1086,6 @@ function deleteUnit(unitName) {
     }
 }
 
-function deleteScheduleRow(periodName) {
-    const weekKey = getWeekKey();
-    if (confirm(`Delete schedule row "${periodName}"?`)) {
-        lastDeleted = {
-            type: 'row',
-            name: periodName,
-            weekKey: weekKey,
-            data: appData.schedule[weekKey][periodName]
-        };
-         delete appData.schedule[weekKey][periodName];
-         updateScheduleDisplay();
-         saveData();
-        pushScheduleState();
-         showUndoButton('Schedule row', () => {
-             appData.schedule[lastDeleted.weekKey][lastDeleted.name] = lastDeleted.data;
-             updateScheduleDisplay();
-             saveData();
-            pushScheduleState();
-         });
-    }
-}
-
-// --- Update UI to Add Delete Buttons ---
-function updateCourseButtons() {
-  const buttonsContainer = document.getElementById('courseButtons');
-  const addButton = buttonsContainer.querySelector('.add-course-btn');
-
-  // Remove previous course rows
-  buttonsContainer.querySelectorAll('.course-wrapper').forEach(el => el.remove());
-
-  Object.keys(appData.courses).forEach(courseName => {
-    const wrapper = document.createElement('div');
-    wrapper.className = 'course-wrapper';
-    wrapper.draggable = true;
-    wrapper.dataset.course = courseName;
-    wrapper.style.display = 'flex';
-    wrapper.style.alignItems = 'center';
-    wrapper.style.gap = '5px';
-
-    // Drag handlers
-    wrapper.addEventListener('dragstart', (e) => {
-      console.log("Start dragging", courseName);
-      e.dataTransfer.setData('text/plain', courseName);
-    });
-
-    wrapper.addEventListener('dragover', (e) => {
-      e.preventDefault();
-    });
-
-    wrapper.addEventListener('drop', (e) => {
-      e.preventDefault();
-      const dragged = e.dataTransfer.getData('text/plain');
-      const target = wrapper.dataset.course;
-      reorderCourses(dragged, target);
-      saveData();
-      updateCourseButtons();
-    });
-
-    // Course button
-    const courseBtn = document.createElement('button');
-    courseBtn.className = 'course-btn';
-    courseBtn.textContent = courseName;
-    courseBtn.onclick = () => showCourseDashboard(courseName);
-
-    // Delete button
-    const deleteBtn = document.createElement('button');
-    deleteBtn.textContent = '×';
-    deleteBtn.style.background = '#dc3545';
-    deleteBtn.style.color = 'white';
-    deleteBtn.style.border = 'none';
-    deleteBtn.style.borderRadius = '4px';
-    deleteBtn.style.cursor = 'pointer';
-    deleteBtn.onclick = () => deleteCourse(courseName);
-
-    wrapper.appendChild(courseBtn);
-    wrapper.appendChild(deleteBtn);
-    buttonsContainer.insertBefore(wrapper, addButton);
-  });
-}
-
-
 function updateUnitsDisplay() {
     const unitsGrid = document.getElementById('unitsGrid');
     unitsGrid.innerHTML = '';
@@ -1199,6 +1118,28 @@ function updateUnitsDisplay() {
         unitCard.appendChild(deleteBtn);
         unitsGrid.appendChild(unitCard);
     });
+}
+
+function deleteScheduleRow(periodName) {
+    const weekKey = getWeekKey();
+    if (confirm(`Delete schedule row "${periodName}"?`)) {
+        lastDeleted = {
+            type: 'row',
+            name: periodName,
+            weekKey: weekKey,
+            data: appData.schedule[weekKey][periodName]
+        };
+         delete appData.schedule[weekKey][periodName];
+         updateScheduleDisplay();
+         saveData();
+        pushScheduleState();
+         showUndoButton('Schedule row', () => {
+             appData.schedule[lastDeleted.weekKey][lastDeleted.name] = lastDeleted.data;
+             updateScheduleDisplay();
+             saveData();
+            pushScheduleState();
+         });
+    }
 }
 
 
@@ -1255,21 +1196,8 @@ function updateUnitsDisplay() {
 }
 
 
-   // Initialize the app when page loads
-        document.addEventListener('DOMContentLoaded', initApp);
-        document.addEventListener('DOMContentLoaded', () => {
-  loadData();
-
-  // Also set up autosave every 10 seconds
-  setInterval(() => {
-    saveData();
-  }, 10000);
-});
-window.addEventListener('DOMContentLoaded', () => {
-  updateScheduleDisplay();      // 👈 your function that draws the table
-  updateClock();         // optional if clock needs to start
-  updateCurrentActivity(); // if activity tracking is used
-});
+    // Initialize the app when page loads
+    document.addEventListener('DOMContentLoaded', initApp);
 
 
 </script>
