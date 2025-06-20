@@ -400,8 +400,6 @@ Just type naturally!"></textarea>
             const redoBtn = document.getElementById('redoActionBtn');
             if (undoBtn) undoBtn.disabled = historyIndex <= 0;
             if (redoBtn) redoBtn.disabled = historyIndex >= scheduleHistory.length - 1;
-
-
         }
 
 
@@ -855,6 +853,7 @@ function showCourseDashboard(courseName) {
         }
 
         // Unit management
+
         function addNewUnit() {
             document.getElementById('unitModal').style.display = 'block';
         }
