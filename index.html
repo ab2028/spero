@@ -335,14 +335,20 @@ Just type naturally!"></textarea>
             const today = new Date();
             const weekStart = new Date(today);
             weekStart.setDate(today.getDate() - today.getDay() + (currentWeekOffset * 7));
-            return weekStart.toISOString().split('T')[0];
+            return weekStart.getFullYear() + '-' +
+       String(weekStart.getMonth() + 1).padStart(2, '0') + '-' +
+       String(weekStart.getDate()).padStart(2, '0');
+
         }
 
         function getRealWeekKey() {
             const today = new Date();
             const weekStart = new Date(today);
             weekStart.setDate(today.getDate() - today.getDay());
-            return weekStart.toISOString().split('T')[0];
+            return weekStart.getFullYear() + '-' +
+       String(weekStart.getMonth() + 1).padStart(2, '0') + '-' +
+       String(weekStart.getDate()).padStart(2, '0');
+
         }
 
         function updateWeekTitle() {
