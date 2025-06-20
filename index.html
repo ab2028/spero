@@ -400,11 +400,6 @@ Just type naturally!"></textarea>
             const redoBtn = document.getElementById('redoActionBtn');
             if (undoBtn) undoBtn.disabled = historyIndex <= 0;
             if (redoBtn) redoBtn.disabled = historyIndex >= scheduleHistory.length - 1;
-
-
-            const options = { month: 'long', day: 'numeric', year: 'numeric' };
-            document.getElementById('weekTitle').textContent =
-                `Week of ${weekStart.toLocaleDateString('en-US', options)}`;
         }
 
 
@@ -855,21 +850,6 @@ function showCourseDashboard(courseName) {
                 }
             };
             reader.readAsText(file);
-        }
-
-        // Unit management
-        function updateUnitsDisplay() {
-            const unitsGrid = document.getElementById('unitsGrid');
-            unitsGrid.innerHTML = '';
-            
-            const units = appData.courses[currentCourse].units;
-            Object.keys(units).forEach(unitName => {
-                const unitCard = document.createElement('div');
-                unitCard.className = 'unit-card';
-                unitCard.textContent = unitName;
-                unitCard.onclick = () => showUnitView(unitName);
-                unitsGrid.appendChild(unitCard);
-            });
         }
 
         function addNewUnit() {
