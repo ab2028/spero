@@ -400,8 +400,57 @@ Just type naturally!"></textarea>
             const redoBtn = document.getElementById('redoActionBtn');
             if (undoBtn) undoBtn.disabled = historyIndex <= 0;
             if (redoBtn) redoBtn.disabled = historyIndex >= scheduleHistory.length - 1;
+
+
+            const options = { month: 'long', day: 'numeric', year: 'numeric' };
+            document.getElementById('weekTitle').textContent =
+                `Week of ${weekStart.toLocaleDateString('en-US', options)}`;
         }
 
+        // ----- History Helpers -----
+        function initScheduleHistory() {
+            const weekKey = getWeekKey();
+            scheduleHistory = [JSON.parse(JSON.stringify(appData.schedule[weekKey] || {}))];
+            historyIndex = 0;
+            updateUndoRedoButtons();
+        }
+
+        function pushScheduleState() {
+            const weekKey = getWeekKey();
+            scheduleHistory = scheduleHistory.slice(0, historyIndex + 1);
+            scheduleHistory.push(JSON.parse(JSON.stringify(appData.schedule[weekKey] || {})));
+            historyIndex++;
+            updateUndoRedoButtons();
+        }
+
+        function undoSchedule() {
+            if (historyIndex > 0) {
+                historyIndex--;
+                const weekKey = getWeekKey();
+                appData.schedule[weekKey] = JSON.parse(JSON.stringify(scheduleHistory[historyIndex]));
+                updateScheduleDisplay();
+                saveData();
+                updateUndoRedoButtons();
+            }
+        }
+
+        function redoSchedule() {
+            if (historyIndex < scheduleHistory.length - 1) {
+                historyIndex++;
+                const weekKey = getWeekKey();
+                appData.schedule[weekKey] = JSON.parse(JSON.stringify(scheduleHistory[historyIndex]));
+                updateScheduleDisplay();
+                saveData();
+                updateUndoRedoButtons();
+            }
+        }
+
+        function updateUndoRedoButtons() {
+            const undoBtn = document.getElementById('undoActionBtn');
+            const redoBtn = document.getElementById('redoActionBtn');
+            if (undoBtn) undoBtn.disabled = historyIndex <= 0;
+            if (redoBtn) redoBtn.disabled = historyIndex >= scheduleHistory.length - 1;
+        }
 
      function updateScheduleDisplay() {
     const weekKey = getWeekKey();
@@ -853,6 +902,19 @@ function showCourseDashboard(courseName) {
         }
 
         // Unit management
+        function updateUnitsDisplay() {
+            const unitsGrid = document.getElementById('unitsGrid');
+            unitsGrid.innerHTML = '';
+            
+            const units = appData.courses[currentCourse].units;
+            Object.keys(units).forEach(unitName => {
+                const unitCard = document.createElement('div');
+                unitCard.className = 'unit-card';
+                unitCard.textContent = unitName;
+                unitCard.onclick = () => showUnitView(unitName);
+                unitsGrid.appendChild(unitCard);
+            });
+        }
 
         function addNewUnit() {
             document.getElementById('unitModal').style.display = 'block';
@@ -1086,6 +1148,87 @@ function deleteUnit(unitName) {
     }
 }
 
+function deleteScheduleRow(periodName) {
+    const weekKey = getWeekKey();
+    if (confirm(`Delete schedule row "${periodName}"?`)) {
+        lastDeleted = {
+            type: 'row',
+            name: periodName,
+            weekKey: weekKey,
+            data: appData.schedule[weekKey][periodName]
+        };
+         delete appData.schedule[weekKey][periodName];
+         updateScheduleDisplay();
+         saveData();
+        pushScheduleState();
+         showUndoButton('Schedule row', () => {
+             appData.schedule[lastDeleted.weekKey][lastDeleted.name] = lastDeleted.data;
+             updateScheduleDisplay();
+             saveData();
+            pushScheduleState();
+         });
+    }
+}
+
+// --- Update UI to Add Delete Buttons ---
+function updateCourseButtons() {
+  const buttonsContainer = document.getElementById('courseButtons');
+  const addButton = buttonsContainer.querySelector('.add-course-btn');
+
+  // Remove previous course rows
+  buttonsContainer.querySelectorAll('.course-wrapper').forEach(el => el.remove());
+
+  Object.keys(appData.courses).forEach(courseName => {
+    const wrapper = document.createElement('div');
+    wrapper.className = 'course-wrapper';
+    wrapper.draggable = true;
+    wrapper.dataset.course = courseName;
+    wrapper.style.display = 'flex';
+    wrapper.style.alignItems = 'center';
+    wrapper.style.gap = '5px';
+
+    // Drag handlers
+    wrapper.addEventListener('dragstart', (e) => {
+      console.log("Start dragging", courseName);
+      e.dataTransfer.setData('text/plain', courseName);
+    });
+
+    wrapper.addEventListener('dragover', (e) => {
+      e.preventDefault();
+    });
+
+    wrapper.addEventListener('drop', (e) => {
+      e.preventDefault();
+      const dragged = e.dataTransfer.getData('text/plain');
+      const target = wrapper.dataset.course;
+      reorderCourses(dragged, target);
+      saveData();
+      updateCourseButtons();
+    });
+
+    // Course button
+    const courseBtn = document.createElement('button');
+    courseBtn.className = 'course-btn';
+    courseBtn.textContent = courseName;
+    courseBtn.onclick = () => showCourseDashboard(courseName);
+
+    // Delete button
+    const deleteBtn = document.createElement('button');
+    deleteBtn.textContent = '×';
+    deleteBtn.style.background = '#dc3545';
+    deleteBtn.style.color = 'white';
+    deleteBtn.style.border = 'none';
+    deleteBtn.style.borderRadius = '4px';
+    deleteBtn.style.cursor = 'pointer';
+    deleteBtn.onclick = () => deleteCourse(courseName);
+
+    wrapper.appendChild(courseBtn);
+    wrapper.appendChild(deleteBtn);
+    buttonsContainer.insertBefore(wrapper, addButton);
+  });
+}
+
+
 function updateUnitsDisplay() {
     const unitsGrid = document.getElementById('unitsGrid');
     unitsGrid.innerHTML = '';
@@ -1118,28 +1261,6 @@ function updateUnitsDisplay() {
         unitCard.appendChild(deleteBtn);
         unitsGrid.appendChild(unitCard);
     });
-}
-
-function deleteScheduleRow(periodName) {
-    const weekKey = getWeekKey();
-    if (confirm(`Delete schedule row "${periodName}"?`)) {
-        lastDeleted = {
-            type: 'row',
-            name: periodName,
-            weekKey: weekKey,
-            data: appData.schedule[weekKey][periodName]
-        };
-         delete appData.schedule[weekKey][periodName];
-         updateScheduleDisplay();
-         saveData();
-        pushScheduleState();
-         showUndoButton('Schedule row', () => {
-             appData.schedule[lastDeleted.weekKey][lastDeleted.name] = lastDeleted.data;
-             updateScheduleDisplay();
-             saveData();
-            pushScheduleState();
-         });
-    }
 }
 
 
@@ -1196,8 +1317,21 @@ function deleteScheduleRow(periodName) {
 }
 
 
-    // Initialize the app when page loads
-    document.addEventListener('DOMContentLoaded', initApp);
+   // Initialize the app when page loads
+        document.addEventListener('DOMContentLoaded', initApp);
+        document.addEventListener('DOMContentLoaded', () => {
+  loadData();
+
+  // Also set up autosave every 10 seconds
+  setInterval(() => {
+    saveData();
+  }, 10000);
+});
+window.addEventListener('DOMContentLoaded', () => {
+  updateScheduleDisplay();      // 👈 your function that draws the table
+  updateClock();         // optional if clock needs to start
+  updateCurrentActivity(); // if activity tracking is used
+});
 
 
 </script>
