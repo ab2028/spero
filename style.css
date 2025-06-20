@@ -381,30 +381,6 @@ body {
     margin-top: 20px;
 }
 
-.time-column {
-    width: 60px;
-    position: relative;
-    border-right: 1px solid #444;
-    background: repeating-linear-gradient(
-        to bottom,
-        #555 0,
-        #555 1px,
-        transparent 1px,
-        transparent 30px
-    );
-    font-size: 0.75em;
-    color: #e0e0e0;
-}
-
-.time-label {
-    position: absolute;
-    left: 2px;
-    height: 30px;
-    transform: translateY(-50%);
-    pointer-events: none;
-}
-
-
 .day-column {
     flex: 1;
     border-left: 1px solid #444;
@@ -436,14 +412,6 @@ body {
 .day-events {
     position: relative;
     height: calc(100% - 40px);
-    background: repeating-linear-gradient(
-        to bottom,
-        #555 0,
-        #555 1px,
-        transparent 1px,
-        transparent 30px
-    );
-
 }
 
 .event-box {
@@ -470,8 +438,7 @@ body {
 
 .current-time-bar {
     position: absolute;
-    left: 60px;
-
+    left: 0;
     right: 0;
     height: 2px;
     background: red;
