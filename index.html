@@ -52,9 +52,28 @@
                         <button class="nav-btn" id="redoActionBtn" onclick="redoSchedule()">Redo</button>
                     </div>
                 </div>
-                <div id="scheduleCalendar" class="calendar-container">
-                    <div id="currentTimeBar" class="current-time-bar"></div>
-                </div>
+                <table class="schedule-table"> <!-- Note: may need fixing -->
+  <thead>
+    <tr>
+      <th></th>  <!-- drag handle -->
+      <th>Period</th>
+      <th>Time</th>
+      <th data-day="0">Sun</th>
+      <th data-day="1">Mon</th>
+      <th data-day="2">Tue</th>
+      <th data-day="3">Wed</th>
+      <th data-day="4">Thu</th>
+      <th data-day="5">Fri</th>
+      <th data-day="6">Sat</th>
+      <th></th>  <!-- delete button -->
+    </tr>
+  </thead>
+  <tbody id="scheduleBody">
+    <!-- Rows go here dynamically -->
+  </tbody>
+</table>
+
+
                 <button class="add-row-btn" onclick="addScheduleRow()">+ Add Period</button>
             </div>
         </div>
@@ -191,8 +210,6 @@ Just type naturally!"></textarea>
             { name: 'P6', time: '8:00-9:45' },
             { name: 'Sleep', time: '10:00-10:30' }
         ];
-
-        const PIXELS_PER_MINUTE = 0.5;
 
         // --- History for undo/redo ---
         let scheduleHistory = [];
@@ -437,101 +454,149 @@ Just type naturally!"></textarea>
 
      function updateScheduleDisplay() {
     const weekKey = getWeekKey();
-    const baseSchedule = appData.schedule[weekKey] || {};
-    const calendar = document.getElementById('scheduleCalendar');
-    calendar.innerHTML = '';
+    const scheduleData = appData.schedule[weekKey] || {};
+    const tbody = document.getElementById('scheduleBody');
+    tbody.innerHTML = '';
 
-    const weekStart = new Date(weekKey);
-    const dayNames = ['Sun','Mon','Tue','Wed','Thu','Fri','Sat'];
-    for (let d = 0; d < 7; d++) {
-        const dayDate = new Date(weekStart);
-        dayDate.setDate(weekStart.getDate() + d);
-        const dateKey = dayDate.toISOString().split('T')[0];
-        const special = appData.specialDaySchedules[dateKey];
-        const scheduleData = special || baseSchedule;
+    const entries = Object.entries(scheduleData);
 
-        const column = document.createElement('div');
-        column.className = 'day-column';
+    entries.forEach(([period, info]) => {
+        const days = info.days;
+        const row = document.createElement('tr');
+        row.draggable = true;
+        row.dataset.period = period;
+        row.addEventListener('dragstart', (e) => {
+    e.dataTransfer.setData('text/plain', period); // Save the dragged period name
+});
+        
 
-        const header = document.createElement('div');
-        header.className = 'day-header';
-        header.textContent = `${dayNames[d]} ${dayDate.getMonth()+1}/${dayDate.getDate()}`;
-        column.appendChild(header);
 
-        const toggle = document.createElement('select');
-        toggle.className = 'day-toggle';
-        toggle.innerHTML = '<option value="regular">Regular</option><option value="special">Special</option>';
-        toggle.value = special ? 'special' : 'regular';
-        toggle.onchange = () => toggleDayType(dateKey, d);
-        column.appendChild(toggle);
+        // Drag handle cell ☰
+        const dragCell = document.createElement('td');
+        dragCell.textContent = '☰';
+        dragCell.style.cursor = 'grab';
+        dragCell.style.textAlign = 'right';
+        dragCell.style.color = '#888';
+        dragCell.style.width = '30px';
+        dragCell.style.userSelect = 'none';
+        dragCell.style.fontSize = '18px';
+        row.appendChild(dragCell);
 
-        const dayEvents = document.createElement('div');
-        dayEvents.className = 'day-events';
-        column.appendChild(dayEvents);
+        // Period name cell
+        const periodCell = document.createElement('td');
+        periodCell.contentEditable = true;
+        periodCell.textContent = period;
+        //periodCell.style.fontWeight = 'bold';
+        //periodCell.style.background = '#f8f9ff';
+        periodCell.addEventListener('blur', () => {
+    const newPeriod = periodCell.textContent.trim();
+    if (newPeriod !== period && newPeriod) {
+        const reordered = Object.entries(scheduleData);
+        const index = reordered.findIndex(([p]) => p === period);
 
-        Object.entries(scheduleData).forEach(([period, info]) => {
-            const parsed = parseTimeRange(info.time);
-            if (!parsed) return;
+        if (index !== -1) {
+            // Replace the key while preserving order
+            reordered[index] = [newPeriod, scheduleData[period]];
+            delete scheduleData[period];
+            appData.schedule[weekKey] = Object.fromEntries(reordered);
 
-            const box = document.createElement('div');
-            box.className = 'event-box';
-            box.dataset.period = period;
-            box.dataset.date = dateKey;
-            box.style.top = (parsed.start * PIXELS_PER_MINUTE) + 'px';
-            box.style.height = Math.max(20, (parsed.end - parsed.start) * PIXELS_PER_MINUTE) + 'px';
-
-            const title = document.createElement('div');
-            title.className = 'event-title';
-            title.textContent = `${period} (${info.time})`;
-            box.appendChild(title);
-
-            const task = document.createElement('div');
-            task.className = 'event-task';
-            task.contentEditable = true;
-            task.textContent = special ? (info.task || '') : (info.days[d] || '');
-            task.addEventListener('blur', () => {
-                if (special) {
-                    info.task = task.textContent.trim();
-                } else {
-                    info.days[d] = task.textContent.trim();
-                }
-                saveData();
-                pushScheduleState();
-            });
-            box.appendChild(task);
-
-            dayEvents.appendChild(box);
-        });
-
-        calendar.appendChild(column);
-    }
-    updateCurrentActivity();
-    updateCurrentTimeBar();
-}
-
-        function toggleDayType(dateKey, dayIndex) {
-            if (appData.specialDaySchedules[dateKey]) {
-                delete appData.specialDaySchedules[dateKey];
-            } else {
-                const weekKey = getWeekKey();
-                const base = JSON.parse(JSON.stringify(appData.schedule[weekKey] || {}));
-                Object.entries(base).forEach(([p, info]) => {
-                    info.task = info.days ? info.days[dayIndex] || '' : '';
-                    delete info.days;
-                });
-                appData.specialDaySchedules[dateKey] = base;
-            }
             saveData();
             updateScheduleDisplay();
+            updateClock();
+            pushScheduleState();
+        }
+    }
+});
+
+        row.appendChild(periodCell);
+
+        // Time cell
+        const timeCell = document.createElement('td');
+        timeCell.contentEditable = true;
+        timeCell.textContent = info.time || '';
+        timeCell.addEventListener('blur', () => {
+            scheduleData[period].time = timeCell.textContent.trim();
+            saveData();
+            updateCurrentActivity();
+            pushScheduleState();
+        });
+        row.appendChild(timeCell);
+        
+
+        // Day cells (Sunday-start week, order matches table: Sun, Mon, Tue, Wed, Thu, Fri, Sat)
+        const dayOrder = [0, 1, 2, 3, 4, 5, 6]; // Confirms Sun=0, Mon=1, ..., Sat=6
+        for (let i = 0; i < 7; i++) {
+            const cell = document.createElement('td');
+            cell.contentEditable = true;
+            cell.dataset.day = dayOrder[i];
+            cell.textContent = days[dayOrder[i]] || '';
+            cell.addEventListener('blur', () => {
+                scheduleData[period].days[dayOrder[i]] = cell.textContent;
+                saveData();
+                      updateCurrentActivity();
+
+            pushScheduleState();
+
+});
+
+
+            row.appendChild(cell);
         }
 
-        function updateCurrentTimeBar() {
-            const bar = document.getElementById('currentTimeBar');
-            if (!bar) return;
-            const now = new Date();
-            const minutes = now.getHours() * 60 + now.getMinutes() + now.getSeconds()/60;
-            bar.style.top = (minutes * PIXELS_PER_MINUTE) + 'px';
-        }
+        // Cell for the Delete button 
+        const deleteCell = document.createElement('td');
+        const deleteBtn = document.createElement('button');
+        deleteBtn.textContent = '×';
+        deleteBtn.style.background = '#dc3545';
+        deleteBtn.style.color = 'white';
+        deleteBtn.style.border = 'none';
+        deleteBtn.style.borderRadius = '4px';
+        deleteBtn.style.cursor = 'pointer';
+        deleteBtn.onclick = () => deleteScheduleRow(period);
+        deleteCell.appendChild(deleteBtn);
+        row.appendChild(deleteCell);
+        
+        
+
+        // Drag events
+        row.addEventListener('dragstart', (e) => {
+            e.dataTransfer.setData('text/plain', period);
+        });
+
+        row.addEventListener('dragover', (e) => {
+            e.preventDefault();
+            row.style.outline = '2px dashed #ccc';
+        });
+
+        row.addEventListener('dragleave', () => {
+            row.style.outline = '';
+        });
+
+        row.addEventListener('drop', (e) => {
+            e.preventDefault();
+            row.style.outline = '';
+
+            const draggedPeriod = e.dataTransfer.getData('text/plain');
+            const targetPeriod = row.dataset.period;
+
+            const reordered = Object.entries(scheduleData);
+            const fromIndex = reordered.findIndex(([p]) => p === draggedPeriod);
+            const toIndex = reordered.findIndex(([p]) => p === targetPeriod);
+
+            if (fromIndex !== -1 && toIndex !== -1 && fromIndex !== toIndex) {
+                const [draggedItem] = reordered.splice(fromIndex, 1);
+                reordered.splice(toIndex, 0, draggedItem);
+                appData.schedule[weekKey] = Object.fromEntries(reordered);
+                saveData();
+                updateScheduleDisplay();
+                pushScheduleState();
+            }
+        });
+
+        tbody.appendChild(row);
+    });
+    updateCurrentActivity();
+}
 
 
         function addScheduleRow() {
@@ -562,14 +627,13 @@ Just type naturally!"></textarea>
         // Clock and activity tracking
         function updateClock() {
             const now = new Date();
-            const timeString = now.toLocaleTimeString('en-US', {
-                hour12: true,
-                hour: 'numeric',
+            const timeString = now.toLocaleTimeString('en-US', { 
+                hour12: true, 
+                hour: 'numeric', 
                 minute: '2-digit',
                 second: '2-digit'
             });
             document.getElementById('currentTime').textContent = timeString;
-            updateCurrentTimeBar();
         }
 
         function parseTimeRange(range, prevHour = null) {
@@ -593,7 +657,9 @@ Just type naturally!"></textarea>
             return { start: start.total, end: end.total, endHour: end.hour };
         }
 
-        function getTimeSlots(scheduleData) {
+        function getTimeSlots(weekKey) {
+            const key = weekKey || getWeekKey();
+            const scheduleData = appData.schedule[key] || {};
             const slots = [];
             let prev = 0;
             for (const [name, info] of Object.entries(scheduleData)) {
@@ -609,10 +675,10 @@ Just type naturally!"></textarea>
         function updateCurrentActivity() {
             const now = new Date();
             const currentTime = now.getHours() * 60 + now.getMinutes();
-            const dateKey = now.toISOString().split('T')[0];
+
             const weekKey = getRealWeekKey();
-            const scheduleData = appData.specialDaySchedules[dateKey] || appData.schedule[weekKey] || {};
-            const timeSlots = getTimeSlots(scheduleData);
+            const timeSlots = getTimeSlots(weekKey);
+            const scheduleData = appData.schedule[weekKey] || {};
             
             /* const timeSlots = [
                { start: 450, end: 480, name: "Wake up time! ☀️", time: "7:30-8:00" },
@@ -640,24 +706,32 @@ Just type naturally!"></textarea>
             const dayIndex = now.getDay();
             if (currentPeriod) {
                 periodText = `${currentPeriod.name} (${currentPeriod.time})`;
-                const info = scheduleData[currentPeriod.name];
-                let activity = '';
-                if (info) {
-                    if (info.task !== undefined) activity = info.task;
-                    else if (info.days) activity = info.days[dayIndex] || '';
-                }
-                if (activity.trim()) activityDetail = activity.trim();
+                const activity = (scheduleData[currentPeriod.name]?.days[dayIndex] || '').trim();
+                if (activity) activityDetail = activity; 
             }
 
             document.getElementById('currentActivity').textContent = periodText;
             document.getElementById('activityDetail').textContent = activityDetail;
-            highlightCurrentSlot(currentPeriod ? currentPeriod.name : null, dateKey);
+            highlightCurrentSlot(currentPeriod ? currentPeriod.name : null, dayIndex);
         }
-        function highlightCurrentSlot(periodName, dateKey) {
+
+        function highlightCurrentSlot(periodName, dayIndex) {
+            document.querySelectorAll('.highlight-day').forEach(el => el.classList.remove('highlight-day'));
+            document.querySelectorAll('.highlight-period').forEach(el => el.classList.remove('highlight-period'));
             document.querySelectorAll('.highlight-current').forEach(el => el.classList.remove('highlight-current'));
-            if (periodName && dateKey) {
-                const selector = `.event-box[data-period="${CSS.escape(periodName)}"][data-date="${dateKey}"]`;
-                document.querySelector(selector)?.classList.add('highlight-current');
+
+            if (dayIndex !== null && dayIndex !== undefined) {
+                document.querySelector(`th[data-day="${dayIndex}"]`)?.classList.add('highlight-day');
+                document.querySelectorAll(`td[data-day="${dayIndex}"]`).forEach(td => td.classList.add('highlight-day'));
+            }
+
+            if (periodName) {
+                const row = document.querySelector(`tr[data-period="${CSS.escape(periodName)}"]`);
+                if (row) {
+                    row.classList.add('highlight-period');
+                    const cell = row.querySelector(`td[data-day="${dayIndex}"]`);
+                    if (cell) cell.classList.add('highlight-current');
+                }
             }
         }
 
@@ -1195,7 +1269,6 @@ function updateUnitsDisplay() {
   let appData = {
     courses: {},
     schedule: {},
-    specialDaySchedules: {},
     weekOffset: 0
   };
 
@@ -1215,7 +1288,6 @@ function updateUnitsDisplay() {
         }
       });
     });
-    if (!appData.specialDaySchedules) appData.specialDaySchedules = {};
   } else {
     appData = {
       courses: {
@@ -1228,7 +1300,6 @@ function updateUnitsDisplay() {
         }
       },
       schedule: {},
-      specialDaySchedules: {},
       weekOffset: 0
     };
   }
@@ -1260,7 +1331,6 @@ window.addEventListener('DOMContentLoaded', () => {
   updateScheduleDisplay();      // 👈 your function that draws the table
   updateClock();         // optional if clock needs to start
   updateCurrentActivity(); // if activity tracking is used
-  updateCurrentTimeBar();
 });
 
 
