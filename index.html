@@ -357,55 +357,6 @@ Just type naturally!"></textarea>
                 `${weekStart.toLocaleDateString('en-US', options)}-${weekEnd.toLocaleDateString('en-US', options)}`;
         }
 
-        // ----- History Helpers -----
-        function initScheduleHistory() {
-            const weekKey = getWeekKey();
-            scheduleHistory = [JSON.parse(JSON.stringify(appData.schedule[weekKey] || {}))];
-            historyIndex = 0;
-            updateUndoRedoButtons();
-        }
-
-        function pushScheduleState() {
-            const weekKey = getWeekKey();
-            scheduleHistory = scheduleHistory.slice(0, historyIndex + 1);
-            scheduleHistory.push(JSON.parse(JSON.stringify(appData.schedule[weekKey] || {})));
-            historyIndex++;
-            updateUndoRedoButtons();
-        }
-
-        function undoSchedule() {
-            if (historyIndex > 0) {
-                historyIndex--;
-                const weekKey = getWeekKey();
-                appData.schedule[weekKey] = JSON.parse(JSON.stringify(scheduleHistory[historyIndex]));
-                updateScheduleDisplay();
-                saveData();
-                updateUndoRedoButtons();
-            }
-        }
-
-        function redoSchedule() {
-            if (historyIndex < scheduleHistory.length - 1) {
-                historyIndex++;
-                const weekKey = getWeekKey();
-                appData.schedule[weekKey] = JSON.parse(JSON.stringify(scheduleHistory[historyIndex]));
-                updateScheduleDisplay();
-                saveData();
-                updateUndoRedoButtons();
-            }
-        }
-
-        function updateUndoRedoButtons() {
-            const undoBtn = document.getElementById('undoActionBtn');
-            const redoBtn = document.getElementById('redoActionBtn');
-            if (undoBtn) undoBtn.disabled = historyIndex <= 0;
-            if (redoBtn) redoBtn.disabled = historyIndex >= scheduleHistory.length - 1;
-
-
-            const options = { month: 'long', day: 'numeric', year: 'numeric' };
-            document.getElementById('weekTitle').textContent =
-                `Week of ${weekStart.toLocaleDateString('en-US', options)}`;
-        }
 
         // ----- History Helpers -----
         function initScheduleHistory() {
